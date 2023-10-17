@@ -1,21 +1,21 @@
 openapi: 3.0.3
 info:
-  title: Api Platform Admin Api
-  description: Api to Access Api Platform data
+  title: API Platform Admin API
+  description: API to access API Platform data
   version: "0.1"
 servers:
   - url: /
 paths:
   /users/query:
     post:
-      description: Api Platform User query
+      description: Get users query
       requestBody:
         required: true
         description: Request body
         content:
           application/json;charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/userqueryrequest'
+              $ref: '#/components/schemas/userQueryRequest'
       responses:
         "200":
           description: OK
@@ -31,16 +31,16 @@ paths:
                 $ref: '#/components/schemas/errorResponse'
   /applications:
     get:
-      description: "application query"
+      description: "Get applications"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/application'
+                $ref: '#/components/schemas/applications'
         "404":
-          description: application could not be found
+          description: Application could not be found
           content:
             application/json:
               schema:
@@ -53,16 +53,22 @@ paths:
         $ref: '#/components/schemas/clientId'
   /applications/{applicationId}:
     get:
-      description: "application by id query"
+      description: "Get application and filter by userId"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/applications'
+                $ref: '#/components/schemas/application'
+        "403":
+          description: UserId cannot access the application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         "404":
-          description: no applications found
+          description: ApplicationId not found
           content:
             application/json:
               schema:
@@ -80,7 +86,7 @@ paths:
           $ref: '#/components/schemas/userId'
   /applications/{applicationId}/users:
     get:
-      description: "application users for application Id"
+      description: "Get application users for applicationId"
       responses:
         "200":
           description: OK
@@ -89,7 +95,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/users'
         "404":
-          description: no users found for application
+          description: ApplicationId could not be found
           content:
             application/json:
               schema:
@@ -102,22 +108,83 @@ paths:
           $ref: '#/components/schemas/applicationId'
   /apis:
     get:
-      description: "apis by query"
+      description: "Get API for service name"
       responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apiData'
         "404":
-          description: no api found
+          description: Service name could not be found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+    parameters:
+      - name: serviceName
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/serviceName'
+
 components:
   schemas:
+    apiContext:
+      type: string
+
+    apiData:
+      type: object
+      properties:
+        serviceName:
+          $ref: '#/components/schemas/serviceName'
+        context:
+          $ref: '#/components/schemas/apiContext'
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          $ref: '#/components/schemas/apiVersions'
+
+    apiVersionNumber:
+      type: string
+
+    apiVersion:
+      type: object
+      properties:
+        apiVersionNumber:
+          $ref: '#/components/schemas/apiVersionNumber'
+        status:
+          type: string
+          enum:
+            - ALPHA
+            - BETA
+            - STABLE
+            - DEPRECATED
+            - RETIRED
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/endpoint'
+
+    apiVersions:
+      type: object
+      properties:
+        apiVersionNumber:
+          $ref: '#/components/schemas/apiVersionNumber'
+        apiVersion:
+          $ref: '#/components/schemas/apiVersion'
+
     applicationId:
       type: string
+
     applications:
       type: array
       items:
         $ref: '#/components/schemas/application'
+
     application:
       type: object
       properties:
@@ -127,25 +194,50 @@ components:
           type: string
         environment:
           $ref: '#/components/schemas/environment'
+
+    endpoint:
+      type: object
+      properties:
+        uriPattern:
+          type: string
+        method:
+          type: string
+          enum:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - DELETE
+            - OPTIONS
+            - HEAD
+
     environment:
       type: string
       enum:
         - PRODUCTION
         - SANDBOX
+
     clientId:
       type: string
-    userqueryrequest:
+
+    serviceName:
+      type: string
+
+    userQueryRequest:
       type: object
       additionalProperties: false
       properties:
         sessionId:
           type: string
+
     userId:
       type: string
+
     users:
       type: array
       items:
         $ref: '#/components/schemas/user'
+
     user:
       type: object
       properties:
@@ -154,13 +246,14 @@ components:
         lastName:
           type: string
         userId:
-            $ref: '#/components/schemas/userId'
+          $ref: '#/components/schemas/userId'
         email:
           type: string
+
     errorResponse:
       type: object
       properties:
-        errorCode:
-          type: integer
-        errorMessage:
+        code:
+          type: string
+        message:
           type: string
