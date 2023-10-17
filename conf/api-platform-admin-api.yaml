@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: Api Platform Admin Api
+  description: Api to Access Api Platform data
+  version: "0.1"
+servers:
+  - url: /
+paths:
+  /users/query:
+    post:
+      description: Api Platform User query
+      requestBody:
+        required: true
+        description: Request body
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/userqueryrequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "404":
+          description: User could not be found
+
+components:
+  schemas:
+    userqueryrequest:
+      type: object
+      additionalProperties: false
+      properties:
+        sessionId:
+          type: string
+    user:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userId:
+          type: string
+        email:
+          type: string
+
