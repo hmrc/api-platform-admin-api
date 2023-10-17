@@ -25,15 +25,127 @@ paths:
                 $ref: '#/components/schemas/user'
         "404":
           description: User could not be found
-
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /applications:
+    get:
+      description: "application query"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application'
+        "404":
+          description: application could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+    parameters:
+    - name: clientId
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/clientId'
+  /applications/{applicationId}:
+    get:
+      description: "application by id query"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/applications'
+        "404":
+          description: no applications found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+    parameters:
+      - name: applicationId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/applicationId'
+      - name: userId
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/userId'
+  /applications/{applicationId}/users:
+    get:
+      description: "application users for application Id"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        "404":
+          description: no users found for application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+    parameters:
+      - name: applicationId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/applicationId'
+  /apis:
+    get:
+      description: "apis by query"
+      responses:
+        "404":
+          description: no api found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 components:
   schemas:
+    applicationId:
+      type: string
+    applications:
+      type: array
+      items:
+        $ref: '#/components/schemas/application'
+    application:
+      type: object
+      properties:
+        applicationId:
+          $ref: '#/components/schemas/applicationId'
+        name:
+          type: string
+        environment:
+          $ref: '#/components/schemas/environment'
+    environment:
+      type: string
+      enum:
+        - PRODUCTION
+        - SANDBOX
+    clientId:
+      type: string
     userqueryrequest:
       type: object
       additionalProperties: false
       properties:
         sessionId:
           type: string
+    userId:
+      type: string
+    users:
+      type: array
+      items:
+        $ref: '#/components/schemas/user'
     user:
       type: object
       properties:
@@ -42,7 +154,13 @@ components:
         lastName:
           type: string
         userId:
-          type: string
+            $ref: '#/components/schemas/userId'
         email:
           type: string
-
+    errorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+        errorMessage:
+          type: string
