@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: API Platform Admin API
+  description: API to access API Platform data
+  version: "0.1"
+servers:
+  - url: /
+paths:
+  /users/query:
+    post:
+      description: Get users query
+      requestBody:
+        required: true
+        description: Request body
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/userQueryRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        "404":
+          description: User could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: User could not be found
+  /applications:
+    get:
+      description: "Get applications"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/applications'
+        "404":
+          description: Application could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: Application could not be found
+    parameters:
+    - name: clientId
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/clientId'
+  /applications/{applicationId}:
+    get:
+      description: "Get application and filter by userId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/application'
+        "403":
+          description: User cannot access the application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                code: FORBIDDEN
+                message: User cannot access the application
+        "404":
+          description: Application could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: Application could not be found
+    parameters:
+      - name: applicationId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/applicationId'
+      - name: userId
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/userId'
+  /applications/{applicationId}/users:
+    get:
+      description: "Get application users for applicationId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        "404":
+          description: Application could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: Application could not be found
+    parameters:
+      - name: applicationId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/applicationId'
+  /apis:
+    get:
+      description: "Get API by query"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apiData'
+        "404":
+          description: API could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: API could not be found
+    parameters:
+      - name: serviceName
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/serviceName'
+
+components:
+  schemas:
+    apiContext:
+      type: string
+      example: "test/api"
+
+    apiData:
+      type: object
+      properties:
+        serviceName:
+          $ref: '#/components/schemas/serviceName'
+        context:
+          $ref: '#/components/schemas/apiContext'
+        name:
+          type: string
+          example: "My API"
+        description:
+          type: string
+          example: "This is my API"
+        versions:
+          $ref: '#/components/schemas/apiVersions'
+
+    apiVersionNumber:
+      type: string
+      example: "1.0"
+
+    apiVersion:
+      type: object
+      properties:
+        version:
+          $ref: '#/components/schemas/apiVersionNumber'
+        status:
+          type: string
+          enum:
+            - ALPHA
+            - BETA
+            - STABLE
+            - DEPRECATED
+            - RETIRED
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/endpoint'
+
+    apiVersions:
+      type: array
+      items:
+        $ref: '#/components/schemas/apiVersion'
+    applicationId:
+      type: string
+      example: 9dd2c894-6d93-11ee-b962-0242ac120002
+
+    applications:
+      type: array
+      items:
+        $ref: '#/components/schemas/application'
+
+    application:
+      type: object
+      properties:
+        applicationId:
+          $ref: '#/components/schemas/applicationId'
+        name:
+          type: string
+          example: "My application"
+        environment:
+          $ref: '#/components/schemas/environment'
+
+    endpoint:
+      type: object
+      properties:
+        uriPattern:
+          type: string
+          example: "/user/{id}"
+        method:
+          type: string
+          enum:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - DELETE
+            - OPTIONS
+            - HEAD
+
+    environment:
+      type: string
+      enum:
+        - PRODUCTION
+        - SANDBOX
+
+    clientId:
+      type: string
+      example: 335b9152-6d94-11ee-b962-0242ac120002
+
+    serviceName:
+      type: string
+      example: "test-api"
+
+    userQueryRequest:
+      type: object
+      properties:
+        sessionId:
+          type: string
+
+    userId:
+      type: string
+      example: 500e372e-6d93-11ee-b962-0242ac120002
+
+    users:
+      type: array
+      items:
+        $ref: '#/components/schemas/user'
+
+    user:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Ana
+        lastName:
+          type: string
+          example: Gram
+        userId:
+          $ref: '#/components/schemas/userId'
+        email:
+          type: string
+          example: "ana.gram@example.com"
+
+    errorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
