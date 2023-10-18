@@ -29,6 +29,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: User could not be found
   /applications:
     get:
       description: "Get applications"
@@ -45,6 +48,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: Application could not be found
     parameters:
     - name: clientId
       in: query
@@ -62,17 +68,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/application'
         "403":
-          description: UserId cannot access the application
+          description: User cannot access the application
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+              example:
+                code: FORBIDDEN
+                message: User cannot access the application
         "404":
-          description: ApplicationId not found
+          description: Application could not be found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: Application could not be found
     parameters:
       - name: applicationId
         in: path
@@ -95,11 +107,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/users'
         "404":
-          description: ApplicationId could not be found
+          description: Application could not be found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: Application could not be found
     parameters:
       - name: applicationId
         in: path
@@ -117,21 +132,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/apiData'
         "404":
-          description: Api could not be found
+          description: API could not be found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+              example:
+                code: NOT_FOUND
+                message: API could not be found
     parameters:
       - name: serviceName
         in: query
         required: true
         schema:
           $ref: '#/components/schemas/serviceName'
-      - name: environment
-        in: query
-        schema:
-          $ref: '#/components/schemas/environment'
 
 components:
   schemas:
@@ -148,10 +162,10 @@ components:
           $ref: '#/components/schemas/apiContext'
         name:
           type: string
-          example: "my Api"
+          example: "My API"
         description:
           type: string
-          example: "this is my Api"
+          example: "This is my API"
         versions:
           $ref: '#/components/schemas/apiVersions'
 
@@ -177,13 +191,13 @@ components:
           items:
             $ref: '#/components/schemas/endpoint'
 
-
     apiVersions:
       type: array
       items:
         $ref: '#/components/schemas/apiVersion'
     applicationId:
       type: string
+      example: 9dd2c894-6d93-11ee-b962-0242ac120002
 
     applications:
       type: array
@@ -197,6 +211,7 @@ components:
           $ref: '#/components/schemas/applicationId'
         name:
           type: string
+          example: "My application"
         environment:
           $ref: '#/components/schemas/environment'
 
@@ -205,6 +220,7 @@ components:
       properties:
         uriPattern:
           type: string
+          example: "/user/{id}"
         method:
           type: string
           enum:
@@ -224,6 +240,7 @@ components:
 
     clientId:
       type: string
+      example: 335b9152-6d94-11ee-b962-0242ac120002
 
     serviceName:
       type: string
@@ -237,6 +254,7 @@ components:
 
     userId:
       type: string
+      example: 500e372e-6d93-11ee-b962-0242ac120002
 
     users:
       type: array
@@ -248,12 +266,15 @@ components:
       properties:
         firstName:
           type: string
+          example: Ana
         lastName:
           type: string
+          example: Gram
         userId:
           $ref: '#/components/schemas/userId'
         email:
           type: string
+          example: "ana.gram@example.com"
 
     errorResponse:
       type: object
