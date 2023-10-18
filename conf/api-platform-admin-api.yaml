@@ -108,7 +108,7 @@ paths:
           $ref: '#/components/schemas/applicationId'
   /apis:
     get:
-      description: "Get API for service name"
+      description: "Get API by query"
       responses:
         "200":
           description: OK
@@ -117,7 +117,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/apiData'
         "404":
-          description: Service name could not be found
+          description: Api could not be found
           content:
             application/json:
               schema:
@@ -128,11 +128,16 @@ paths:
         required: true
         schema:
           $ref: '#/components/schemas/serviceName'
+      - name: environment
+        in: query
+        schema:
+          $ref: '#/components/schemas/environment'
 
 components:
   schemas:
     apiContext:
       type: string
+      example: "test/api"
 
     apiData:
       type: object
@@ -143,18 +148,21 @@ components:
           $ref: '#/components/schemas/apiContext'
         name:
           type: string
+          example: "my Api"
         description:
           type: string
-        version:
+          example: "this is my Api"
+        versions:
           $ref: '#/components/schemas/apiVersions'
 
     apiVersionNumber:
       type: string
+      example: "1.0"
 
     apiVersion:
       type: object
       properties:
-        apiVersionNumber:
+        version:
           $ref: '#/components/schemas/apiVersionNumber'
         status:
           type: string
@@ -169,14 +177,11 @@ components:
           items:
             $ref: '#/components/schemas/endpoint'
 
-    apiVersions:
-      type: object
-      properties:
-        apiVersionNumber:
-          $ref: '#/components/schemas/apiVersionNumber'
-        apiVersion:
-          $ref: '#/components/schemas/apiVersion'
 
+    apiVersions:
+      type: array
+      items:
+        $ref: '#/components/schemas/apiVersion'
     applicationId:
       type: string
 
@@ -222,10 +227,10 @@ components:
 
     serviceName:
       type: string
+      example: "test-api"
 
     userQueryRequest:
       type: object
-      additionalProperties: false
       properties:
         sessionId:
           type: string
