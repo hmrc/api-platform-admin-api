@@ -1,0 +1,45 @@
+{
+  "serviceName": "test-api",
+  "context": "test/api",
+  "name": "My API",
+  "description": "This is my API",
+  "versions": [
+    {
+      "version": "1.0",
+      "environment": "PRINCIPAL",
+      "status": "ALPHA",
+      "endpoints": [
+        {
+          "uriPattern": "/user/{id}",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "version": "1.0",
+      "environment": "SUBORDINATE",
+      "status": "BETA",
+      "endpoints": [
+        {
+          "uriPattern": "/user/{id}",
+          "method": "GET"
+        },
+        {
+          "uriPattern": "/user/{id}",
+          "method": "POST"
+        }
+      ]
+    },
+    {
+      "version": "1.1",
+      "environment": "SUBORDINATE",
+      "status": "ALPHA",
+      "endpoints": [
+        {
+          "uriPattern": "/user/{id}",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}
