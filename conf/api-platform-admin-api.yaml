@@ -213,8 +213,8 @@ components:
     environment:
       type: string
       enum:
-        - PRINCIPAL
-        - SUBORDINATE
+        - PRODUCTION
+        - SANDBOX
 
     clientId:
       type: string
