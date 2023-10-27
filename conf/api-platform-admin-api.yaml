@@ -73,32 +73,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-              examples:
-                applicationNotFound:
-                  summary: Application not found
-                  value:
-                    code: APPLICATION_NOT_FOUND
-                    message: Application could not be found
-                userNotFoundInTeam:
-                  summary: User not found
-                  value:
-                    code: USER_NOT_FOUND
-                    message: User could not be found in application team
+              example:
+                code: NOT_FOUND
+                message: Application could not be found
     parameters:
       - name: applicationId
         in: path
         required: true
         schema:
           $ref: '#/components/schemas/applicationId'
-      - name: userId
-        in: query
-        description: A user who is in the application team
-        required: false
-        schema:
-          $ref: '#/components/schemas/userId'
   /apis:
     get:
-      description: Get API by service name
+      description: Get API by service name and environment
       responses:
         "200":
           description: OK
@@ -121,6 +107,11 @@ paths:
         required: true
         schema:
           $ref: '#/components/schemas/serviceName'
+      - name: environment
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/environment'
 
 components:
   schemas:
