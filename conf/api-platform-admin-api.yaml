@@ -66,7 +66,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/application'
+                $ref: '#/components/schemas/applicationWithUsers'
         "404":
           description: Application could not be found
           content:
@@ -179,8 +179,19 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/application'
-
+    
     application:
+      type: object
+      properties:
+        applicationId:
+          $ref: '#/components/schemas/applicationId'
+        name:
+          type: string
+          example: My application
+        environment:
+          $ref: '#/components/schemas/environment'
+          
+    applicationWithUsers:
       type: object
       properties:
         applicationId:
