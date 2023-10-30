@@ -232,7 +232,9 @@ components:
       properties:
         sessionId:
           type: string
-          description: Session ID of a logged-in user
+          description: UUID. Session ID of a logged-in user
+          required: true
+          example: 1b580e34-774c-11ee-b962-0242ac120002
 
     userId:
       type: string
