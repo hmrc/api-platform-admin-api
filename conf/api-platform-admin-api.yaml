@@ -8,10 +8,9 @@ servers:
 paths:
   /users/query:
     post:
-      description: Get users query
+      description: Get verified user query
       requestBody:
         required: true
-        description: Request body
         content:
           application/json;charset=UTF-8:
             schema:
@@ -34,7 +33,7 @@ paths:
                 message: User could not be found
   /applications:
     get:
-      description: "Get applications"
+      description: Get application by client ID
       responses:
         "200":
           description: OK
@@ -53,59 +52,21 @@ paths:
                 message: Application could not be found
     parameters:
     - name: clientId
+      description: A unique key to applications
       in: query
       required: true
       schema:
         $ref: '#/components/schemas/clientId'
   /applications/{applicationId}:
     get:
-      description: "Get application and filter by userId"
+      description: Get application
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/application'
-        "403":
-          description: User cannot access the application
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-              example:
-                code: FORBIDDEN
-                message: User cannot access the application
-        "404":
-          description: Application could not be found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-              example:
-                code: NOT_FOUND
-                message: Application could not be found
-    parameters:
-      - name: applicationId
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/applicationId'
-      - name: userId
-        in: query
-        required: true
-        schema:
-          $ref: '#/components/schemas/userId'
-  /applications/{applicationId}/users:
-    get:
-      description: "Get application users for applicationId"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/users'
+                $ref: '#/components/schemas/applicationWithUsers'
         "404":
           description: Application could not be found
           content:
@@ -123,7 +84,7 @@ paths:
           $ref: '#/components/schemas/applicationId'
   /apis:
     get:
-      description: "Get API by query"
+      description: Get API by service name and environment
       responses:
         "200":
           description: OK
@@ -146,12 +107,17 @@ paths:
         required: true
         schema:
           $ref: '#/components/schemas/serviceName'
+      - name: environment
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/environment'
 
 components:
   schemas:
     apiContext:
       type: string
-      example: "test/api"
+      example: test/api
 
     apiData:
       type: object
@@ -162,16 +128,16 @@ components:
           $ref: '#/components/schemas/apiContext'
         name:
           type: string
-          example: "My API"
+          example: My API
         description:
           type: string
-          example: "This is my API"
+          example: This is my API
         versions:
           $ref: '#/components/schemas/apiVersions'
 
     apiVersionNumber:
       type: string
-      example: "1.0"
+      example: '1.0'
 
     apiVersion:
       type: object
@@ -197,13 +163,14 @@ components:
         $ref: '#/components/schemas/apiVersion'
     applicationId:
       type: string
+      description: UUID
       example: 9dd2c894-6d93-11ee-b962-0242ac120002
 
     applications:
       type: array
       items:
         $ref: '#/components/schemas/application'
-
+    
     application:
       type: object
       properties:
@@ -211,16 +178,29 @@ components:
           $ref: '#/components/schemas/applicationId'
         name:
           type: string
-          example: "My application"
+          example: My application
         environment:
           $ref: '#/components/schemas/environment'
+          
+    applicationWithUsers:
+      type: object
+      properties:
+        applicationId:
+          $ref: '#/components/schemas/applicationId'
+        name:
+          type: string
+          example: My application
+        environment:
+          $ref: '#/components/schemas/environment'
+        users:
+          $ref: '#/components/schemas/users'
 
     endpoint:
       type: object
       properties:
         uriPattern:
           type: string
-          example: "/user/{id}"
+          example: /user/{id}
         method:
           type: string
           enum:
@@ -240,24 +220,30 @@ components:
 
     clientId:
       type: string
+      description: UUID
       example: 335b9152-6d94-11ee-b962-0242ac120002
 
     serviceName:
       type: string
-      example: "test-api"
+      example: test-api
 
     userQueryRequest:
       type: object
       properties:
         sessionId:
           type: string
+          description: UUID. Session ID of a logged-in user
+          required: true
+          example: 1b580e34-774c-11ee-b962-0242ac120002
 
     userId:
       type: string
+      description: UUID
       example: 500e372e-6d93-11ee-b962-0242ac120002
 
     users:
       type: array
+      description: Verified users
       items:
         $ref: '#/components/schemas/user'
 
@@ -274,7 +260,7 @@ components:
           $ref: '#/components/schemas/userId'
         email:
           type: string
-          example: "ana.gram@example.com"
+          example: ana.gram@example.com
 
     errorResponse:
       type: object
