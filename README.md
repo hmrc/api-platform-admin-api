@@ -1,7 +1,10 @@
-
 # api-platform-admin-api
 
-This is a placeholder README.md for a new repository
+This API provides an interface to API Platform data to be consumed by other MDTP services.
+
+It provides stable endpoints for consumers and allows for free growth and maintenance of the API Platform services.
+
+The details of the endpoints can be found in the [OpenAPI Specification](./conf/api-platform-admin-api.yaml).
 
 ### License
 

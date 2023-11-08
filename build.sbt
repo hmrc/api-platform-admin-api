@@ -4,7 +4,6 @@ import sbt.Tests.{Group, SubProcess}
 import sbt._
 import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.DefaultBuildSettings._
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 lazy val appName = "api-platform-admin-api"
 
@@ -30,13 +29,11 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     routesGenerator := InjectedRoutesGenerator,
     majorVersion    := 0,
-//    routesImport ++= Seq(
-//      "uk.gov.hmrc.apiplatform.modules.submissions.controllers._",
-//      "uk.gov.hmrc.apiplatform.modules.submissions.controllers.binders._",
-//      "uk.gov.hmrc.thirdpartyapplication.domain.models._",
-//      "uk.gov.hmrc.apiplatform.modules.applications.domain.models._",
-//      "uk.gov.hmrc.apiplatform.modules.submissions.domain.models._"
-//    )
+    routesImport ++= Seq(
+      "uk.gov.hmrc.apiplatformadminapi.controllers._",
+      "uk.gov.hmrc.apiplatformadminapi.controllers.Binders._",
+      "uk.gov.hmrc.apiplatform.modules.common.domain.models._"
+    )
   )
   .settings(
     Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
@@ -46,6 +43,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .configs(IntegrationTest)
   .settings(DefaultBuildSettings.integrationTestSettings())
+  .settings(scalafixConfigSettings(IntegrationTest))
   .settings(
     IntegrationTest / fork              := false,
     IntegrationTest / unmanagedSourceDirectories ++= Seq(baseDirectory.value / "it", baseDirectory.value / "shared-test"),
@@ -80,3 +78,12 @@ def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
 
 Global / bloopAggregateSourceDependencies := true
 
+
+commands ++= Seq(
+  Command.command("run-all-tests") { state => "test" :: "it:test" :: state },
+
+  Command.command("clean-and-test") { state => "clean" :: "compile" :: "run-all-tests" :: state },
+
+  // Coverage does not need compile !
+  Command.command("pre-commit") { state => "clean" :: "scalafmtAll" :: "scalafixAll" :: "coverage" :: "run-all-tests" :: "coverageReport" :: "coverageOff" :: state }
+)

@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apiplatformadminapi.controllers
+package uk.gov.hmrc.thirdpartyorchestrator.utils
 
+import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{EitherValues, Inside, OptionValues}
+import org.scalatestplus.play.WsScalaTestClient
 
-import play.api.http.Status
-import play.api.test.Helpers._
-import play.api.test.{FakeRequest, Helpers}
+import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 
-class MicroserviceHelloWorldControllerSpec extends AnyWordSpec with Matchers {
+abstract class HmrcSpec extends AnyWordSpec with Matchers with OptionValues with EitherValues with Inside with WsScalaTestClient with MockitoSugar with ArgumentMatchersSugar {}
 
-  private val fakeRequest = FakeRequest("GET", "/")
-  private val controller  = new MicroserviceHelloWorldController(Helpers.stubControllerComponents())
-
-  "GET /" should {
-    "return 200" in {
-      val result = controller.hello()(fakeRequest)
-      status(result) shouldBe Status.OK
-    }
-  }
-}
+abstract class AsyncHmrcSpec extends HmrcSpec with DefaultAwaitTimeout with FutureAwaits {}
