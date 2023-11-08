@@ -140,8 +140,8 @@ components:
       additionalProperties:
         $ref: '#/components/schemas/apiVersion'
       example:
-        '0.1':
-          versionNbr: '0.1'
+        '1.0':
+          versionNbr: '1.0'
           status: ALPHA
           endpoints:
             - uriPattern: /user/{id}
