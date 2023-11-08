@@ -135,6 +135,18 @@ components:
         versions:
           $ref: '#/components/schemas/apiVersions'
 
+    apiVersions:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/apiVersion'
+      example:
+        '0.1':
+          versionNbr: '0.1'
+          status: ALPHA
+          endpoints:
+            - uriPattern: /user/{id}
+              method: GET
+
     apiVersionNumber:
       type: string
       example: '1.0'
@@ -142,7 +154,7 @@ components:
     apiVersion:
       type: object
       properties:
-        version:
+        versionNbr:
           $ref: '#/components/schemas/apiVersionNumber'
         status:
           type: string
@@ -157,10 +169,6 @@ components:
           items:
             $ref: '#/components/schemas/endpoint'
 
-    apiVersions:
-      type: array
-      items:
-        $ref: '#/components/schemas/apiVersion'
     applicationId:
       type: string
       description: UUID
