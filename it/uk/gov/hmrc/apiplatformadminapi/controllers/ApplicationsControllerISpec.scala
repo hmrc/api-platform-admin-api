@@ -24,11 +24,11 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.test.WireMockSupport
-import uk.gov.hmrc.thirdpartyorchestrator.utils.AsyncHmrcSpec
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
 import uk.gov.hmrc.apiplatformadminapi.models.{Developer, ErrorResponse, FetchedApplication}
 import uk.gov.hmrc.apiplatformadminapi.stubs.ThirdPartyOrchestratorConnectorStub
+import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
 
 class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport with GuiceOneAppPerSuite with ThirdPartyOrchestratorConnectorStub {
 

@@ -22,11 +22,11 @@ import play.api.http.Status
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.thirdpartyorchestrator.utils.HmrcSpec
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationResponse, Developer, ErrorResponse, FetchedApplication, User}
+import uk.gov.hmrc.apiplatformadminapi.utils.HmrcSpec
 
 class ApplicationsControllerSpec extends HmrcSpec with ApplicationsServiceMockModule {
 

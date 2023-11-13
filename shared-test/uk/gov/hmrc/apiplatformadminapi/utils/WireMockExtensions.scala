@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.thirdpartyorchestrator.utils
+package uk.gov.hmrc.apiplatformadminapi.utils
 
 import com.github.tomakehurst.wiremock.client.{MappingBuilder, ResponseDefinitionBuilder}
 
