@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apiplatformadminapi.controllers
+package uk.gov.hmrc.apiplatformadminapi.config
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import javax.inject.{Inject, Provider, Singleton}
 
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-@Singleton()
-class MicroserviceHelloWorldController @Inject() (cc: ControllerComponents)
-    extends BackendController(cc) {
+import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
 
-  def hello(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok("Hello world"))
-  }
+@Singleton
+class ThirdPartyOrchestratorConnectorConfigProvider @Inject() (config: ServicesConfig) extends Provider[ThirdPartyOrchestratorConnector.Config] {
+
+  override def get(): ThirdPartyOrchestratorConnector.Config =
+    ThirdPartyOrchestratorConnector.Config(serviceBaseUrl = config.baseUrl("third-party-orchestrator"))
 }

@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: API Platform Admin API
   description: API to access API Platform data
-  version: "0.1"
+  version: '1.0'
 servers:
   - url: /
 paths:

@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apiplatformadminapi.config
+package uk.gov.hmrc.apiplatformadminapi.utils
 
-import com.google.inject.AbstractModule
+import play.api.Logger
 
-import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
-
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-
-    bind(classOf[ThirdPartyOrchestratorConnector.Config]).toProvider(classOf[ThirdPartyOrchestratorConnectorConfigProvider])
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+trait ApplicationLogger {
+  protected val logger: Logger = Logger("application")
 }
