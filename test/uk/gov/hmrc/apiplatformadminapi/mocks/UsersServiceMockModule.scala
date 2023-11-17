@@ -29,7 +29,7 @@ trait UsersServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
   val mockApplicationsService = mock[UsersService]
 
-  object GetDeveloper {
+  object GetUserBySessionId {
 
     def returns(developer: Developer) =
       when(mockApplicationsService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.successful(Some(developer)))

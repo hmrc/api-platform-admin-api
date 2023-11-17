@@ -42,7 +42,7 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
       verify(mockThirdPartyOrchestratorConnector).getApplication(eqTo(applicationId))(*)
   }
 
-  object QueryUsers {
+  object GetBySessionId {
 
     def returns(developer: Developer) =
       when(mockThirdPartyOrchestratorConnector.getBySessionId(*[SessionId])(*)).thenReturn(Future.successful(Some(developer)))

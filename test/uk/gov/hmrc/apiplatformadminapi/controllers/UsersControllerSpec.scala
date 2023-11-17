@@ -45,19 +45,19 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule {
     val user      = User(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
   }
 
-  "getApplication" should {
+  "userQuery" should {
     "return 200 and an Application body" in new Setup {
-      GetDeveloper.returns(developer)
+      GetUserBySessionId.returns(developer)
 
       val result = underTest.userQuery()(fakeRequest)
 
       status(result) shouldBe Status.OK
       contentAsJson(result).as[User] shouldBe user
-      GetDeveloper.verifyCalledWith(sessionId)
+      GetUserBySessionId.verifyCalledWith(sessionId)
     }
 
     "return 404 if the application cannot found" in new Setup {
-      GetDeveloper.returnsNone()
+      GetUserBySessionId.returnsNone()
 
       val result = underTest.userQuery()(fakeRequest)
 
@@ -66,7 +66,7 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule {
     }
 
     "return 400 if the body is invalid" in new Setup {
-      GetDeveloper.returnsNone()
+      GetUserBySessionId.returnsNone()
 
       val result = underTest.userQuery()(FakeRequest().withTextBody("random"))
 
@@ -75,7 +75,7 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule {
     }
 
     "return 400 if the body is missing sessionId" in new Setup {
-      GetDeveloper.returnsNone()
+      GetUserBySessionId.returnsNone()
 
       val result = underTest.userQuery()(FakeRequest().withJsonBody(Json.parse("{}")))
 
@@ -84,7 +84,7 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule {
     }
 
     "return 500 if there is an unexpected error" in new Setup {
-      GetDeveloper.fails()
+      GetUserBySessionId.fails()
 
       val result = underTest.userQuery()(fakeRequest)
 
