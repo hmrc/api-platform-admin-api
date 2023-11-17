@@ -55,7 +55,7 @@ class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with Guice
   "userQuery" should {
 
     "return 200 on the agreed route" in new Setup {
-      UserQuery.returns(developer)
+      GetBySessionId.returns(developer)
 
       val result = route(app, FakeRequest("POST", s"/users/query").withJsonBody(Json.toJson(UserRequest(sessionId)))).get
 
