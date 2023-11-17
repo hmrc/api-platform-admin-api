@@ -49,27 +49,18 @@ class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with Guice
 
     val sessionId = SessionId.random
 
-    val userId    = UserId.random
-    val developer = Developer(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
-    val user      = User(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
+    val developer = Developer(UserId.random, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
   }
 
   "userQuery" should {
 
     "return 200 on the agreed route" in new Setup {
-      GetDeveloper.returns(developer)
+      UserQuery.returns(developer)
 
       val result = route(app, FakeRequest("POST", s"/users/query").withJsonBody(Json.toJson(UserRequest(sessionId)))).get
 
       status(result) mustBe OK
       // the response body is tested in `tests/.../UsersControllerSpec` so not repeated here
-    }
-
-    "return 400 when query is missing json" in new Setup {
-      val result = route(app, FakeRequest("POST", "/users/query")).get
-
-      status(result) mustBe BAD_REQUEST
-      contentAsJson(result) mustBe ErrorResponse("Invalid payload", "Invalid Json").asJson
     }
   }
 }

@@ -39,7 +39,7 @@ class UsersServiceSpec extends AsyncHmrcSpec with ThirdPartyOrchestratorConnecto
   }
 
   "getUserBySessionId" should {
-    "return an User with the requested sessionId" in new Setup {
+    "return a User with the requested sessionId" in new Setup {
       GetBySessionId.returns(user)
 
       val result = await(underTest.getUserBySessionId(sessionId))

@@ -46,7 +46,7 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule {
   }
 
   "userQuery" should {
-    "return 200 and an User body" in new Setup {
+    "return 200 and a User body" in new Setup {
       GetUserBySessionId.returns(developer)
 
       val result = underTest.userQuery()(fakeRequest)

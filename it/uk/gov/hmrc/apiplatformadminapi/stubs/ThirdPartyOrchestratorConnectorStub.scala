@@ -39,7 +39,7 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
       )
   }
 
-  object GetDeveloper {
+  object UserQuery {
 
     def returns(developer: Developer): Any =
       stubFor(
