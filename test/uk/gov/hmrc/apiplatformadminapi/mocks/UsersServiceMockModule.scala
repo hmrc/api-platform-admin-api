@@ -27,20 +27,20 @@ import uk.gov.hmrc.apiplatformadminapi.services.UsersService
 
 trait UsersServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
-  val mockApplicationsService = mock[UsersService]
+  val mockService = mock[UsersService]
 
   object GetUserBySessionId {
 
     def returns(developer: Developer) =
-      when(mockApplicationsService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.successful(Some(developer)))
+      when(mockService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.successful(Some(developer)))
 
     def returnsNone() =
-      when(mockApplicationsService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.successful(None))
+      when(mockService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.successful(None))
 
     def fails() =
-      when(mockApplicationsService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.failed(new Exception("bang")))
 
     def verifyCalledWith(sessionId: SessionId) =
-      verify(mockApplicationsService).getUserBySessionId(eqTo(sessionId))(*)
+      verify(mockService).getUserBySessionId(eqTo(sessionId))(*)
   }
 }

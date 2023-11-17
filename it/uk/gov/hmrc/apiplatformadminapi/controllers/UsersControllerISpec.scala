@@ -54,7 +54,7 @@ class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with Guice
     val user      = User(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
   }
 
-  "getApplication" should {
+  "userQuery" should {
 
     "return 200 on the agreed route" in new Setup {
       GetDeveloper.returns(developer)
@@ -65,7 +65,7 @@ class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with Guice
       // the response body is tested in `tests/.../UsersControllerSpec` so not repeated here
     }
 
-    "return 400 when applicationId is not a UUID" in new Setup {
+    "return 400 when query is missing json" in new Setup {
       val result = route(app, FakeRequest("POST", "/users/query")).get
 
       status(result) mustBe BAD_REQUEST
