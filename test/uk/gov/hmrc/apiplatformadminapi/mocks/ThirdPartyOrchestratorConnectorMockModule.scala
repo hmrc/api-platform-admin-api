@@ -20,9 +20,11 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
+
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
 import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
-import uk.gov.hmrc.apiplatformadminapi.models.FetchedApplication
+import uk.gov.hmrc.apiplatformadminapi.models.{Developer, FetchedApplication}
 
 trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
@@ -38,5 +40,17 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
     def verifyCalledWith(applicationId: ApplicationId) =
       verify(mockThirdPartyOrchestratorConnector).getApplication(eqTo(applicationId))(*)
+  }
+
+  object QueryUsers {
+
+    def returns(developer: Developer) =
+      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[SessionId])(*)).thenReturn(Future.successful(Some(developer)))
+
+    def returnsNone() =
+      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[SessionId])(*)).thenReturn(Future.successful(None))
+
+    def verifyCalledWith(sessionId: SessionId) =
+      verify(mockThirdPartyOrchestratorConnector).getBySessionId(eqTo(sessionId))(*)
   }
 }

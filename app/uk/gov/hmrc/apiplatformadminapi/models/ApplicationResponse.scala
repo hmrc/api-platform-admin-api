@@ -20,7 +20,9 @@ import play.api.libs.json.{JsValue, Json, OFormat}
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
 
-case class User(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String)
+case class User(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String) {
+  def asJson: JsValue = User.format.writes(this)
+}
 
 object User {
 

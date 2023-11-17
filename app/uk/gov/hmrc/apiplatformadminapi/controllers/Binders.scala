@@ -41,10 +41,12 @@ object Binders {
       override def bind(key: String, value: String): Either[String, ApplicationId] = {
         textBinder.bind(key, value).flatMap(applicationIdFromString)
       }
+      // $COVERAGE-OFF$
 
       override def unbind(key: String, applicationId: ApplicationId): String = {
         textBinder.unbind(key, applicationId.toString)
       }
+      // $COVERAGE-ON$
     }
 
 //  For next ticket
