@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 
 import play.api.test.Helpers._
 
-import uk.gov.hmrc.apiplatformadminapi.models.FetchedApplication
+import uk.gov.hmrc.apiplatformadminapi.models._
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
 trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
@@ -35,6 +35,19 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
             aResponse()
               .withStatus(OK)
               .withJsonBody(application)
+          )
+      )
+  }
+
+  object GetBySessionId {
+
+    def returns(developer: Developer): Any =
+      stubFor(
+        post(urlPathEqualTo(s"/session/validate"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withJsonBody(developer)
           )
       )
   }

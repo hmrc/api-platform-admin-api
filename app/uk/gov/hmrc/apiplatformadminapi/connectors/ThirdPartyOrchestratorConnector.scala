@@ -19,17 +19,22 @@ package uk.gov.hmrc.apiplatformadminapi.connectors
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
-import uk.gov.hmrc.apiplatformadminapi.models.FetchedApplication
+import uk.gov.hmrc.apiplatformadminapi.models._
 
 @Singleton
 class ThirdPartyOrchestratorConnector @Inject() (http: HttpClient, config: ThirdPartyOrchestratorConnector.Config)(implicit ec: ExecutionContext) {
 
   def getApplication(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Option[FetchedApplication]] = {
     http.GET[Option[FetchedApplication]](url = s"${config.serviceBaseUrl}/applications/$applicationId", queryParams = Seq("developers" -> "verified"))
+  }
+
+  def getBySessionId(sessionId: SessionId)(implicit hc: HeaderCarrier): Future[Option[Developer]] = {
+    http.POST[UserRequest, Option[Developer]](url = s"${config.serviceBaseUrl}/session/validate", body = UserRequest(sessionId))
   }
 }
 
