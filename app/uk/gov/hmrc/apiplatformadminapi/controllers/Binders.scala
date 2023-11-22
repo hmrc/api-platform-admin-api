@@ -20,9 +20,10 @@ import java.util.UUID
 import scala.util.control.Exception.allCatch
 
 import play.api.Logger
-import play.api.mvc.PathBindable
+import play.api.mvc.{PathBindable, QueryStringBindable}
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
+import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 
 object Binders {
   val logger = Logger("binders")
@@ -33,6 +34,36 @@ object Binders {
         logger.info("Cannot parse parameter %s as ApplicationId".format(text))
         "applicationId is not a UUID"
       })
+  }
+
+  implicit def serviceNameQueryBinder(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[ServiceName] = new QueryStringBindable[ServiceName] {
+
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, ServiceName]] = {
+      textBinder.bind(key, params).map {
+        case Right(name) => Right(ServiceName(name))
+        case _           => Left("Not a valid serviceName")
+      }
+    }
+
+    override def unbind(key: String, serviceName: ServiceName): String = {
+      serviceName.value
+    }
+  }
+
+  implicit def environmentQueryBinder(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[Environment] = new QueryStringBindable[Environment] {
+
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Environment]] = {
+      for {
+        text <- textBinder.bind(key, params)
+      } yield text match {
+        case Right(env) => Environment.apply(env).toRight("Not a valid environment")
+        case _          => Left("Not a valid environment")
+      }
+    }
+
+    override def unbind(key: String, env: Environment): String = {
+      env.toString.toLowerCase
+    }
   }
 
   implicit def applicationIdPathBindable(implicit textBinder: PathBindable[String]): PathBindable[ApplicationId] =
@@ -49,19 +80,19 @@ object Binders {
       // $COVERAGE-ON$
     }
 
-//  For next ticket
-//  implicit def clientIdQueryStringBindable(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[ClientId] =
-//    new QueryStringBindable[ClientId] {
-//
-//      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, ClientId]] = {
-//        textBinder.bind(key, params).map {
-//          case Right(clientId) => Right(ClientId(clientId))
-//          case _               => Left("Unable to bind clientId")
-//        }
-//      }
-//
-//      override def unbind(key: String, clientId: ClientId): String = {
-//        textBinder.unbind(key, clientId.toString)
-//      }
-//    }
+  //  For next ticket
+  //  implicit def clientIdQueryStringBindable(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[ClientId] =
+  //    new QueryStringBindable[ClientId] {
+  //
+  //      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, ClientId]] = {
+  //        textBinder.bind(key, params).map {
+  //          case Right(clientId) => Right(ClientId(clientId))
+  //          case _               => Left("Unable to bind clientId")
+  //        }
+  //      }
+  //
+  //      override def unbind(key: String, clientId: ClientId): String = {
+  //        textBinder.unbind(key, clientId.toString)
+  //      }
+  //    }
 }

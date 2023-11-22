@@ -16,16 +16,14 @@
 
 package uk.gov.hmrc.apiplatformadminapi.config
 
-import com.google.inject.AbstractModule
+import javax.inject.{Inject, Provider, Singleton}
 
-import uk.gov.hmrc.apiplatformadminapi.connectors.{ApmConnector, ThirdPartyOrchestratorConnector}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class Module extends AbstractModule {
+import uk.gov.hmrc.apiplatformadminapi.connectors.ApmConnector
 
-  override def configure(): Unit = {
+@Singleton
+class ApmConnectorConfigProvider @Inject() (config: ServicesConfig) extends Provider[ApmConnector.Config] {
 
-    bind(classOf[ThirdPartyOrchestratorConnector.Config]).toProvider(classOf[ThirdPartyOrchestratorConnectorConfigProvider])
-    bind(classOf[ApmConnector.Config]).toProvider(classOf[ApmConnectorConfigProvider])
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  override def get(): ApmConnector.Config = ApmConnector.Config(serviceBaseUrl = config.baseUrl("api-platform-microservice"))
 }

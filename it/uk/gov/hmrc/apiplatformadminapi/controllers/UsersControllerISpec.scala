@@ -27,10 +27,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.http.test.WireMockSupport
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{LaxEmailAddress, UserId}
 import uk.gov.hmrc.apiplatformadminapi.models._
 import uk.gov.hmrc.apiplatformadminapi.stubs.ThirdPartyOrchestratorConnectorStub
-import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
+import uk.gov.hmrc.apiplatformadminapi.utils.{AsyncHmrcSpec, UserTestData}
 
 class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with GuiceOneAppPerSuite with ThirdPartyOrchestratorConnectorStub {
 
@@ -44,12 +43,10 @@ class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with Guice
     .configure(stubConfig)
     .build()
 
-  trait Setup {
+  trait Setup extends UserTestData {
     val underTest = app.injector.instanceOf[ApplicationsController]
 
     val sessionId = SessionId.random
-
-    val developer = Developer(UserId.random, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
   }
 
   "userQuery" should {

@@ -25,12 +25,11 @@ import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.http.HeaderCarrier
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{LaxEmailAddress, UserId}
 import uk.gov.hmrc.apiplatformadminapi.mocks.UsersServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models._
-import uk.gov.hmrc.apiplatformadminapi.utils.HmrcSpec
+import uk.gov.hmrc.apiplatformadminapi.utils.{HmrcSpec, UserTestData}
 
-class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule {
+class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with UserTestData {
 
   trait Setup {
     implicit val hc = HeaderCarrier()
@@ -39,10 +38,6 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule {
     val fakeRequest = FakeRequest().withJsonBody(Json.toJson(UserRequest(sessionId)))
 
     val underTest = new UsersController(mockService, Helpers.stubControllerComponents())
-
-    val userId    = UserId.random
-    val developer = Developer(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
-    val user      = User(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
   }
 
   "userQuery" should {

@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apiplatformadminapi.config
+package uk.gov.hmrc.apiplatformadminapi.services
 
-import com.google.inject.AbstractModule
+import javax.inject.Inject
+import scala.concurrent.Future
 
-import uk.gov.hmrc.apiplatformadminapi.connectors.{ApmConnector, ThirdPartyOrchestratorConnector}
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.http.HeaderCarrier
 
-class Module extends AbstractModule {
+import uk.gov.hmrc.apiplatformadminapi.connectors.ApmConnector
 
-  override def configure(): Unit = {
+class ApisService @Inject() (apmConnector: ApmConnector) {
 
-    bind(classOf[ThirdPartyOrchestratorConnector.Config]).toProvider(classOf[ThirdPartyOrchestratorConnectorConfigProvider])
-    bind(classOf[ApmConnector.Config]).toProvider(classOf[ApmConnectorConfigProvider])
-    bind(classOf[AppConfig]).asEagerSingleton()
+  def fetchApi(serviceName: ServiceName)(implicit hc: HeaderCarrier): Future[Option[Locator[ApiDefinition]]] = {
+    apmConnector.fetchApi(serviceName)
   }
 }
