@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.test.Helpers._
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.Developer
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
 trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
@@ -69,13 +69,14 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
 
   object GetBySessionId {
 
-    def returns(developer: Developer): Any =
+    def stubWithSessionId(sessionId: SessionId): StubMapping =
       stubFor(
         post(urlPathEqualTo(s"/session/validate"))
+          .withRequestBody(equalTo(s"""{"sessionId":"${sessionId.value}"}"""))
           .willReturn(
             aResponse()
               .withStatus(OK)
-              .withJsonBody(developer)
+              .withBody(developerResponseBody)
           )
       )
   }

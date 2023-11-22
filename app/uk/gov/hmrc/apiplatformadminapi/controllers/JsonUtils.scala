@@ -31,14 +31,14 @@ trait JsonUtils extends Results {
   def withJsonBodyFromAnyContent[T](f: T => Future[Result])(implicit request: Request[AnyContent], reads: Reads[T], d: DummyImplicit): Future[Result] = {
     request.body.asJson match {
       case Some(json) => withJson(json)(f)
-      case _          => Future.successful(BadRequest(ErrorResponse("Invalid payload", "Invalid Json").asJson))
+      case _          => Future.successful(BadRequest(ErrorResponse("BAD_REQUEST", "Invalid JSON payload").asJson))
     }
   }
 
   private def withJson[T](json: JsValue)(f: T => Future[Result])(implicit reads: Reads[T]): Future[Result] = {
     Try(json.validate[T]) match {
       case Success(JsSuccess(payload, _)) => f(payload)
-      case _                              => Future.successful(BadRequest(ErrorResponse("Invalid payload", "Invalid Json").asJson))
+      case _                              => Future.successful(BadRequest(ErrorResponse("BAD_REQUEST", "Invalid JSON payload").asJson))
     }
   }
 }

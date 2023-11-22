@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
-import uk.gov.hmrc.apiplatformadminapi.models.UserRequest
+import uk.gov.hmrc.apiplatformadminapi.models.{ErrorResponse, UserRequest}
 import uk.gov.hmrc.apiplatformadminapi.stubs.ThirdPartyOrchestratorConnectorStub
 import uk.gov.hmrc.apiplatformadminapi.utils.{AsyncHmrcSpec, UserTestData}
 
@@ -52,12 +52,21 @@ class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with Guice
   "userQuery" should {
 
     "return 200 on the agreed route" in new Setup {
-      GetBySessionId.returns(developer)
+      GetBySessionId.stubWithSessionId(sessionId)
 
       val result = route(app, FakeRequest("POST", s"/users/query").withJsonBody(Json.toJson(UserRequest(sessionId)))).get
 
       status(result) mustBe OK
       // the response body is tested in `tests/.../UsersControllerSpec` so not repeated here
+    }
+
+    "return 400 when the request body is missing" in new Setup {
+      GetBySessionId.stubWithSessionId(sessionId)
+
+      val result = route(app, FakeRequest("POST", s"/users/query")).get
+
+      status(result) mustBe BAD_REQUEST
+      contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "Invalid JSON payload").asJson
     }
   }
 }
