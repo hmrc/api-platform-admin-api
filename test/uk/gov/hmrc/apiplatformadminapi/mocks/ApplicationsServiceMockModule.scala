@@ -20,8 +20,8 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
-import uk.gov.hmrc.apiplatformadminapi.models.ApplicationWithUsers
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
+import uk.gov.hmrc.apiplatformadminapi.models.{Application, ApplicationWithUsers}
 import uk.gov.hmrc.apiplatformadminapi.services.ApplicationsService
 
 trait ApplicationsServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
@@ -41,5 +41,20 @@ trait ApplicationsServiceMockModule extends MockitoSugar with ArgumentMatchersSu
 
     def verifyCalledWith(applicationId: ApplicationId) =
       verify(mockApplicationsService).getApplicationWithUsers(eqTo(applicationId))(*)
+  }
+
+  object GetApplicationByClientId {
+
+    def returns(application: Application) =
+      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(Some(application)))
+
+    def returnsNotFound() =
+      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(None))
+
+    def fails() =
+      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.failed(new Exception("bang")))
+
+    def verifyCalledWith(clientId: ClientId) =
+      verify(mockApplicationsService).getApplicationByClientId(eqTo(clientId))(*)
   }
 }

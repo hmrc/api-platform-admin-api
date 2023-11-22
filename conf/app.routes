@@ -1,6 +1,8 @@
 # microservice specific routes
 
 GET         /applications/:applicationId        uk.gov.hmrc.apiplatformadminapi.controllers.ApplicationsController.getApplication(applicationId: ApplicationId)
+GET         /applications                       uk.gov.hmrc.apiplatformadminapi.controllers.ApplicationsController.getApplicationsByQueryParam()
+
 GET         /apis                               uk.gov.hmrc.apiplatformadminapi.controllers.ApiDefinitionController.fetch(serviceName: ServiceName, environment: Environment)
 
 POST        /users/query                        uk.gov.hmrc.apiplatformadminapi.controllers.UsersController.userQuery()

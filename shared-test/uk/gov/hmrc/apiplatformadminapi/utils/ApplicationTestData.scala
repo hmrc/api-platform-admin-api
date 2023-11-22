@@ -21,9 +21,10 @@ import uk.gov.hmrc.apiplatformadminapi.models._
 
 trait ApplicationTestData extends ApplicationBuilder with UserTestData {
   val applicationId       = ApplicationId.random
+  val clientId            = ClientId.random
   val appName             = "Application Name"
   val environment         = Environment.PRODUCTION
-  val applicationResponse = buildApplication(applicationId, appName, environment)
+  val applicationResponse = buildApplication(applicationId, clientId, appName, environment)
 
   val developers = Set(developer)
 
@@ -33,4 +34,12 @@ trait ApplicationTestData extends ApplicationBuilder with UserTestData {
     environment,
     users = developers.map(User.from)
   )
+
+  val application = Application(
+    applicationId,
+    appName,
+    environment
+  )
+
+  val applications = Applications(List(application))
 }

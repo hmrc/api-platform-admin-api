@@ -21,7 +21,7 @@ import scala.concurrent.Future
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
 import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
 
@@ -39,6 +39,18 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
     def verifyCalledWith(applicationId: ApplicationId) =
       verify(mockThirdPartyOrchestratorConnector).getApplication(eqTo(applicationId))(*)
+  }
+
+  object GetApplicationByClientId {
+
+    def returns(application: ApplicationResponse) =
+      when(mockThirdPartyOrchestratorConnector.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(Some(application)))
+
+    def returnsNone() =
+      when(mockThirdPartyOrchestratorConnector.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(None))
+
+    def verifyCalledWith(clientId: ClientId) =
+      verify(mockThirdPartyOrchestratorConnector).getApplicationByClientId(eqTo(clientId))(*)
   }
 
   object GetApplicationDevelopers {

@@ -49,8 +49,8 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
   "getApplication" should {
 
     "return 200 on the agreed route" in new Setup {
-      GetApplication.returns(applicationResponse)
-      GetApplicationDevelopers.returnsFor(applicationId, developers)
+      GetApplication.stubWithApplicationId(applicationId)
+      GetApplicationDevelopers.stubWithApplicationId(applicationId)
 
       val result = route(app, FakeRequest("GET", s"/applications/$applicationId")).get
 
@@ -64,6 +64,32 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
 
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "applicationId is not a UUID").asJson
+    }
+  }
+
+  "getApplicationsByQueryParam" should {
+
+    "return 200 on the agreed route" in new Setup {
+      GetApplicationByClientId.stubWithClientId(clientId)
+
+      val result = route(app, FakeRequest("GET", s"/applications?clientId=$clientId")).get
+
+      status(result) mustBe OK
+      // the response body is tested in `tests/.../ApplicationsControllerSpec` so not repeated here
+    }
+
+    "return 400 when there are no query parameters" in new Setup {
+      val result = route(app, FakeRequest("GET", s"/applications")).get
+
+      status(result) mustBe BAD_REQUEST
+      contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "Invalid or missing query parameters").asJson
+    }
+
+    "return 400 when the query parameters are not valid" in new Setup {
+      val result = route(app, FakeRequest("GET", s"/applications?x=a&y=b")).get
+
+      status(result) mustBe BAD_REQUEST
+      contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "Invalid or missing query parameters").asJson
     }
   }
 }
