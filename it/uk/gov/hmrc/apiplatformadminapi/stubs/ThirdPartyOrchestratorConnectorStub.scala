@@ -20,21 +20,35 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 
 import play.api.test.Helpers._
 
-import uk.gov.hmrc.apiplatformadminapi.models._
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.Developer
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
 trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
 
   object GetApplication {
 
-    def returns(application: FetchedApplication): Any =
+    def returns(applicationResponse: ApplicationResponse): Any =
       stubFor(
-        get(urlPathEqualTo(s"/applications/${application.applicationId}"))
-          .withQueryParam("developers", equalTo("verified"))
+        get(urlPathEqualTo(s"/applications/${applicationResponse.id}"))
           .willReturn(
             aResponse()
               .withStatus(OK)
-              .withJsonBody(application)
+              .withJsonBody(applicationResponse)
+          )
+      )
+  }
+
+  object GetApplicationDevelopers {
+
+    def returnsFor(applicationId: ApplicationId, developers: Set[Developer]): Any =
+      stubFor(
+        get(urlPathEqualTo(s"/applications/$applicationId/developers"))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withJsonBody(developers)
           )
       )
   }

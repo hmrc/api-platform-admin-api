@@ -19,11 +19,10 @@ package uk.gov.hmrc.apiplatformadminapi.services
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.http.HeaderCarrier
 
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
 import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
-import uk.gov.hmrc.apiplatformadminapi.models._
 
 @Singleton
 class UsersService @Inject() (thirdPartyOrchestratorConnector: ThirdPartyOrchestratorConnector)(implicit val ec: ExecutionContext) {

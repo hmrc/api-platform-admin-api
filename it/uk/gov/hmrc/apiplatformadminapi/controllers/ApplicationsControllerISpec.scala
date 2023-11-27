@@ -29,7 +29,7 @@ import uk.gov.hmrc.apiplatformadminapi.models.ErrorResponse
 import uk.gov.hmrc.apiplatformadminapi.stubs.ThirdPartyOrchestratorConnectorStub
 import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, AsyncHmrcSpec}
 
-class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport with GuiceOneAppPerSuite with ThirdPartyOrchestratorConnectorStub {
+class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport with GuiceOneAppPerSuite {
 
   val stubConfig = Configuration(
     "microservice.services.third-party-orchestrator.port" -> wireMockPort,
@@ -41,7 +41,7 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
     .configure(stubConfig)
     .build()
 
-  trait Setup extends ApplicationTestData {
+  trait Setup extends ThirdPartyOrchestratorConnectorStub with ApplicationTestData {
     val underTest = app.injector.instanceOf[ApplicationsController]
 
   }
@@ -49,7 +49,8 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
   "getApplication" should {
 
     "return 200 on the agreed route" in new Setup {
-      GetApplication.returns(fetchedApplication)
+      GetApplication.returns(applicationResponse)
+      GetApplicationDevelopers.returnsFor(applicationId, developers)
 
       val result = route(app, FakeRequest("GET", s"/applications/$applicationId")).get
 
@@ -57,6 +58,7 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
       // the response body is tested in `tests/.../ApplicationsControllerSpec` so not repeated here
     }
 
+    // Testing the Binder for ApplicationId
     "return 400 when applicationId is not a UUID" in new Setup {
       val result = route(app, FakeRequest("GET", "/applications/not-a-uuid")).get
 

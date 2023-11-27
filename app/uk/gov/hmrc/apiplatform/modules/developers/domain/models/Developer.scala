@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apiplatformadminapi.models
+package uk.gov.hmrc.apiplatform.modules.developers.domain.models
 
 import play.api.libs.json.{Json, OFormat}
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{LaxEmailAddress, UserId}
 
 case class Developer(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String)
 
 object Developer {
   implicit val format: OFormat[Developer] = Json.format[Developer]
-}
-case class FetchedApplication(applicationId: ApplicationId, name: String, environment: Environment, developers: Set[Developer])
-
-object FetchedApplication {
-  implicit val format: OFormat[FetchedApplication] = Json.format[FetchedApplication]
 }

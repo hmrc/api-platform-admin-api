@@ -19,8 +19,8 @@ package uk.gov.hmrc.apiplatformadminapi.stubs
 import com.github.tomakehurst.wiremock.client.WireMock._
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
 trait ApmConnectorStub extends WireMockExtensions {

@@ -22,11 +22,11 @@ import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.http.HeaderCarrier
 
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.apiplatformadminapi.mocks.UsersServiceMockModule
-import uk.gov.hmrc.apiplatformadminapi.models._
+import uk.gov.hmrc.apiplatformadminapi.models.{ErrorResponse, User, UserRequest}
 import uk.gov.hmrc.apiplatformadminapi.utils.{HmrcSpec, UserTestData}
 
 class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with UserTestData {

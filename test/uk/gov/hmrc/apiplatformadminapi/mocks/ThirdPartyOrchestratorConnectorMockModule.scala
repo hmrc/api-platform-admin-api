@@ -20,11 +20,10 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
-
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
 import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
-import uk.gov.hmrc.apiplatformadminapi.models.{Developer, FetchedApplication}
 
 trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
@@ -32,7 +31,7 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
   object GetApplication {
 
-    def returns(application: FetchedApplication) =
+    def returns(application: ApplicationResponse) =
       when(mockThirdPartyOrchestratorConnector.getApplication(*[ApplicationId])(*)).thenReturn(Future.successful(Some(application)))
 
     def returnsNone() =
@@ -40,6 +39,21 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
     def verifyCalledWith(applicationId: ApplicationId) =
       verify(mockThirdPartyOrchestratorConnector).getApplication(eqTo(applicationId))(*)
+  }
+
+  object GetApplicationDevelopers {
+
+    def returns(developers: Set[Developer]) =
+      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(*)).thenReturn(Future.successful(developers))
+
+    def returnsNoDevelopers() =
+      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(*)).thenReturn(Future.successful(Set.empty))
+
+    def verifyCalledWith(applicationId: ApplicationId) =
+      verify(mockThirdPartyOrchestratorConnector).getApplicationDevelopers(eqTo(applicationId))(*)
+
+    def verifyNotCalled() =
+      verify(mockThirdPartyOrchestratorConnector, never).getApplicationDevelopers(*[ApplicationId])(*)
   }
 
   object GetBySessionId {

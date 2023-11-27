@@ -19,9 +19,9 @@ package uk.gov.hmrc.apiplatformadminapi.services
 import javax.inject.Inject
 import scala.concurrent.Future
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatformadminapi.connectors.ApmConnector
 
 class ApisService @Inject() (apmConnector: ApmConnector) {

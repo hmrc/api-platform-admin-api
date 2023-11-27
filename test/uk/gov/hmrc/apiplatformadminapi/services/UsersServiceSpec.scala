@@ -18,12 +18,11 @@ package uk.gov.hmrc.apiplatformadminapi.services
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{LaxEmailAddress, UserId}
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
 import uk.gov.hmrc.apiplatformadminapi.mocks.ThirdPartyOrchestratorConnectorMockModule
-import uk.gov.hmrc.apiplatformadminapi.models.Developer
 import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
 
 class UsersServiceSpec extends AsyncHmrcSpec with ThirdPartyOrchestratorConnectorMockModule {

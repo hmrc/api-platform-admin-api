@@ -18,7 +18,9 @@ package uk.gov.hmrc.apiplatformadminapi.models
 
 import play.api.libs.json.{JsValue, Json, OFormat}
 
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.Developer
 
 case class User(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String) {
   def asJson: JsValue = User.format.writes(this)
@@ -36,18 +38,18 @@ object User {
   implicit val format = Json.format[User]
 }
 
-case class ApplicationResponse(applicationId: ApplicationId, name: String, environment: Environment, users: Set[User]) {
-  def asJson: JsValue = ApplicationResponse.format.writes(this)
+case class ApplicationWithUsers(applicationId: ApplicationId, name: String, environment: Environment, users: Set[User]) {
+  def asJson: JsValue = ApplicationWithUsers.format.writes(this)
 }
 
-object ApplicationResponse {
+object ApplicationWithUsers {
 
-  def from(application: FetchedApplication) = ApplicationResponse(
-    applicationId = application.applicationId,
-    name = application.name,
-    environment = application.environment,
-    users = application.developers.map(User.from)
+  def from(applicationResponse: ApplicationResponse, developers: Set[Developer]) = ApplicationWithUsers(
+    applicationId = applicationResponse.id,
+    name = applicationResponse.name,
+    environment = applicationResponse.deployedTo,
+    users = developers.map(User.from)
   )
 
-  implicit val format: OFormat[ApplicationResponse] = Json.format[ApplicationResponse]
+  implicit val format: OFormat[ApplicationWithUsers] = Json.format[ApplicationWithUsers]
 }

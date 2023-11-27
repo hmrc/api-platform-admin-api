@@ -24,12 +24,12 @@ import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
-import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationResponse, ErrorResponse}
+import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationWithUsers, ErrorResponse}
 import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, HmrcSpec}
 
-class ApplicationsControllerSpec extends HmrcSpec with ApplicationsServiceMockModule with ApplicationTestData {
+class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
-  trait Setup {
+  trait Setup extends ApplicationsServiceMockModule {
     implicit val hc = HeaderCarrier()
 
     // Request is not interrogated for parameters or body, so a dummy for now; this will change when adding internal-auth
@@ -41,17 +41,17 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationsServiceMockMo
 
   "getApplication" should {
     "return 200 and an Application body" in new Setup {
-      GetApplication.returns(fetchedApplication)
+      GetApplicationWithUsers.returns(applicationWithUsers)
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
 
       status(result) shouldBe Status.OK
-      contentAsJson(result).as[ApplicationResponse] shouldBe applicationResponse
-      GetApplication.verifyCalledWith(applicationId)
+      contentAsJson(result).as[ApplicationWithUsers] shouldBe applicationWithUsers
+      GetApplicationWithUsers.verifyCalledWith(applicationId)
     }
 
-    "return 404 if the application cannot found" in new Setup {
-      GetApplication.returnsNone()
+    "return 404 if the application cannot be found" in new Setup {
+      GetApplicationWithUsers.returnsNotFound()
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
 
@@ -60,7 +60,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationsServiceMockMo
     }
 
     "return 500 if there is an unexpected error" in new Setup {
-      GetApplication.fails()
+      GetApplicationWithUsers.fails()
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
 

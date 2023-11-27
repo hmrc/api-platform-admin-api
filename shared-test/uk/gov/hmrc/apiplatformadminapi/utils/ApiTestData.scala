@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apiplatformadminapi.utils
 
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
-
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, ApiVersionNbr}
 import uk.gov.hmrc.apiplatformadminapi.models._
 

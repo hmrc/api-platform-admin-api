@@ -21,8 +21,8 @@ import scala.util.control.Exception.allCatch
 
 import play.api.Logger
 import play.api.mvc.{PathBindable, QueryStringBindable}
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 
 object Binders {

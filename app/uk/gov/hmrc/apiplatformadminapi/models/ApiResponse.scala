@@ -17,8 +17,8 @@
 package uk.gov.hmrc.apiplatformadminapi.models
 
 import play.api.libs.json.{JsObject, Json, OFormat}
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 
 case class EndpointResponse(uriPattern: String, method: HttpMethod)
