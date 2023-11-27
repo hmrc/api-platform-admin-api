@@ -23,12 +23,11 @@ import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
-import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationResponse, Developer, ErrorResponse, FetchedApplication, User}
-import uk.gov.hmrc.apiplatformadminapi.utils.HmrcSpec
+import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationResponse, ErrorResponse}
+import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, HmrcSpec}
 
-class ApplicationsControllerSpec extends HmrcSpec with ApplicationsServiceMockModule {
+class ApplicationsControllerSpec extends HmrcSpec with ApplicationsServiceMockModule with ApplicationTestData {
 
   trait Setup {
     implicit val hc = HeaderCarrier()
@@ -38,13 +37,6 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationsServiceMockMo
 
     val underTest = new ApplicationsController(mockApplicationsService, Helpers.stubControllerComponents())
 
-    val userId    = UserId.random
-    val developer = Developer(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
-    val user      = User(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
-
-    val applicationId       = ApplicationId.random
-    val fetchedApplication  = FetchedApplication(applicationId, "name", Environment.PRODUCTION, Set(developer))
-    val applicationResponse = ApplicationResponse(applicationId, "name", Environment.PRODUCTION, Set(user))
   }
 
   "getApplication" should {

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apiplatformadminapi.config
+package uk.gov.hmrc.apiplatformadminapi.utils
 
-import com.google.inject.AbstractModule
+import uk.gov.hmrc.apiplatform.modules.common.domain.models._
+import uk.gov.hmrc.apiplatformadminapi.models._
 
-import uk.gov.hmrc.apiplatformadminapi.connectors.{ApmConnector, ThirdPartyOrchestratorConnector}
+trait UserTestData {
 
-class Module extends AbstractModule {
+  val userId    = UserId.random
+  val developer = Developer(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
+  val user      = User(userId, LaxEmailAddress("test@test.com"), "Barbara", "Liskov")
 
-  override def configure(): Unit = {
-
-    bind(classOf[ThirdPartyOrchestratorConnector.Config]).toProvider(classOf[ThirdPartyOrchestratorConnectorConfigProvider])
-    bind(classOf[ApmConnector.Config]).toProvider(classOf[ApmConnectorConfigProvider])
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
 }

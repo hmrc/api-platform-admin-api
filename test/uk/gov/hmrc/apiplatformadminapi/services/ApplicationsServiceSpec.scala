@@ -20,35 +20,25 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import uk.gov.hmrc.http.HeaderCarrier
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
 import uk.gov.hmrc.apiplatformadminapi.mocks.ThirdPartyOrchestratorConnectorMockModule
-import uk.gov.hmrc.apiplatformadminapi.models.{Developer, FetchedApplication}
-import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
+import uk.gov.hmrc.apiplatformadminapi.utils._
 
-class ApplicationsServiceSpec extends AsyncHmrcSpec with ThirdPartyOrchestratorConnectorMockModule {
+class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
 
-  trait Setup {
+  trait Setup extends ThirdPartyOrchestratorConnectorMockModule {
     implicit val hc = HeaderCarrier()
 
     val underTest = new ApplicationsService(mockThirdPartyOrchestratorConnector)
 
-    val applicationId = ApplicationId.random
-
-    val application = FetchedApplication(
-      applicationId,
-      "name",
-      Environment.PRODUCTION,
-      Set(Developer(UserId.random, LaxEmailAddress("test@test.com"), "Barbara", "Liskov"))
-    )
   }
 
   "getApplication" should {
     "return an application with the requested applicationId" in new Setup {
-      GetApplication.returns(application)
+      GetApplication.returns(fetchedApplication)
 
       val result = await(underTest.getApplication(applicationId))
 
-      result shouldBe Some(application)
+      result shouldBe Some(fetchedApplication)
       GetApplication.verifyCalledWith(applicationId)
     }
 
