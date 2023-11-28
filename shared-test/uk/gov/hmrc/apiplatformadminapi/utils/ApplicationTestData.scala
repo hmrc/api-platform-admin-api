@@ -17,10 +17,20 @@
 package uk.gov.hmrc.apiplatformadminapi.utils
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
-import uk.gov.hmrc.apiplatformadminapi.models.{FetchedApplication, _}
+import uk.gov.hmrc.apiplatformadminapi.models._
 
-trait ApplicationTestData extends UserTestData {
+trait ApplicationTestData extends ApplicationBuilder with UserTestData {
   val applicationId       = ApplicationId.random
-  val fetchedApplication  = FetchedApplication(applicationId, "name", Environment.PRODUCTION, Set(developer))
-  val applicationResponse = ApplicationResponse(applicationId, "name", Environment.PRODUCTION, Set(user))
+  val appName             = "Application Name"
+  val environment         = Environment.PRODUCTION
+  val applicationResponse = buildApplication(applicationId, appName, environment)
+
+  val developers = Set(developer)
+
+  val applicationWithUsers = ApplicationWithUsers(
+    applicationId,
+    appName,
+    environment,
+    users = developers.map(User.from)
+  )
 }

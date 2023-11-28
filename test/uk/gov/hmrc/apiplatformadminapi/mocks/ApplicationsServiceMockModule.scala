@@ -21,25 +21,25 @@ import scala.concurrent.Future
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
-import uk.gov.hmrc.apiplatformadminapi.models.FetchedApplication
+import uk.gov.hmrc.apiplatformadminapi.models.ApplicationWithUsers
 import uk.gov.hmrc.apiplatformadminapi.services.ApplicationsService
 
 trait ApplicationsServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
   val mockApplicationsService = mock[ApplicationsService]
 
-  object GetApplication {
+  object GetApplicationWithUsers {
 
-    def returns(application: FetchedApplication) =
-      when(mockApplicationsService.getApplication(*[ApplicationId])(*)).thenReturn(Future.successful(Some(application)))
+    def returns(application: ApplicationWithUsers) =
+      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(*)).thenReturn(Future.successful(Right(application)))
 
-    def returnsNone() =
-      when(mockApplicationsService.getApplication(*[ApplicationId])(*)).thenReturn(Future.successful(None))
+    def returnsNotFound() =
+      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(*)).thenReturn(Future.successful(Left("Application could not be found")))
 
     def fails() =
-      when(mockApplicationsService.getApplication(*[ApplicationId])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(*)).thenReturn(Future.failed(new Exception("bang")))
 
     def verifyCalledWith(applicationId: ApplicationId) =
-      verify(mockApplicationsService).getApplication(eqTo(applicationId))(*)
+      verify(mockApplicationsService).getApplicationWithUsers(eqTo(applicationId))(*)
   }
 }

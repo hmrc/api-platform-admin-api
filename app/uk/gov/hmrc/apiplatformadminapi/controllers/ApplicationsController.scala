@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
-import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationResponse, ErrorResponse}
+import uk.gov.hmrc.apiplatformadminapi.models.ErrorResponse
 import uk.gov.hmrc.apiplatformadminapi.services.ApplicationsService
 import uk.gov.hmrc.apiplatformadminapi.utils.ApplicationLogger
 
@@ -33,9 +33,9 @@ class ApplicationsController @Inject() (applicationsService: ApplicationsService
     extends BackendController(cc) with ApplicationLogger {
 
   def getApplication(applicationId: ApplicationId): Action[AnyContent] = Action.async { implicit request =>
-    applicationsService.getApplication(applicationId).map {
-      case Some(fetchedApplication) => Ok(ApplicationResponse.from(fetchedApplication).asJson)
-      case None                     => NotFound(ErrorResponse("NOT_FOUND", "Application could not be found").asJson)
+    applicationsService.getApplicationWithUsers(applicationId).map {
+      case Right(applicationWithUsers) => Ok(applicationWithUsers.asJson)
+      case Left(message)               => NotFound(ErrorResponse("NOT_FOUND", message).asJson)
     } recover {
       case NonFatal(e) =>
         val message = s"An unexpected error occurred: ${e.getMessage}"

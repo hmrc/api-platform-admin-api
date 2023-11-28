@@ -20,9 +20,7 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
-
-import uk.gov.hmrc.apiplatformadminapi.models.Developer
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
 import uk.gov.hmrc.apiplatformadminapi.services.UsersService
 
 trait UsersServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {

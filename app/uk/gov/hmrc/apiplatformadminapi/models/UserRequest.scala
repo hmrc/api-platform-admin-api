@@ -17,6 +17,7 @@
 package uk.gov.hmrc.apiplatformadminapi.models
 
 import play.api.libs.json.Json
+
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 
 case class UserRequest(sessionId: SessionId)

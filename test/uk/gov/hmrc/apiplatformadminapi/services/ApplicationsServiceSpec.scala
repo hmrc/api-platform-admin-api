@@ -21,7 +21,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apiplatformadminapi.mocks.ThirdPartyOrchestratorConnectorMockModule
-import uk.gov.hmrc.apiplatformadminapi.utils._
+import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, AsyncHmrcSpec}
 
 class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
 
@@ -34,21 +34,35 @@ class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
 
   "getApplication" should {
     "return an application with the requested applicationId" in new Setup {
-      GetApplication.returns(fetchedApplication)
+      GetApplication.returns(applicationResponse)
+      GetApplicationDevelopers.returns(developers)
 
-      val result = await(underTest.getApplication(applicationId))
+      val result = await(underTest.getApplicationWithUsers(applicationId))
 
-      result shouldBe Some(fetchedApplication)
+      result shouldBe Right(applicationWithUsers)
       GetApplication.verifyCalledWith(applicationId)
+      GetApplicationDevelopers.verifyCalledWith(applicationId)
+    }
+
+    "return an application with no developers" in new Setup {
+      GetApplication.returns(applicationResponse.copy(collaborators = Set.empty))
+      GetApplicationDevelopers.returnsNoDevelopers()
+
+      val result = await(underTest.getApplicationWithUsers(applicationId))
+
+      result shouldBe Right(applicationWithUsers.copy(users = Set.empty))
+      GetApplication.verifyCalledWith(applicationId)
+      GetApplicationDevelopers.verifyCalledWith(applicationId)
     }
 
     "return None if the application was not found" in new Setup {
       GetApplication.returnsNone()
 
-      val result = await(underTest.getApplication(applicationId))
+      val result = await(underTest.getApplicationWithUsers(applicationId))
 
-      result shouldBe None
+      result shouldBe Left("Application could not be found")
       GetApplication.verifyCalledWith(applicationId)
+      GetApplicationDevelopers.verifyNotCalled()
     }
   }
 }

@@ -24,10 +24,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.http.test.WireMockSupport
 
-import uk.gov.hmrc.apiplatformadminapi.models._
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
+import uk.gov.hmrc.apiplatformadminapi.models.UserRequest
 import uk.gov.hmrc.apiplatformadminapi.stubs.ThirdPartyOrchestratorConnectorStub
 import uk.gov.hmrc.apiplatformadminapi.utils.{AsyncHmrcSpec, UserTestData}
 

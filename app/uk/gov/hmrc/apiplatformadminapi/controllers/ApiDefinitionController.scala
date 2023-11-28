@@ -21,9 +21,9 @@ import scala.concurrent.ExecutionContext
 import scala.util.control.NonFatal
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 import uk.gov.hmrc.apiplatformadminapi.models.{ApiResponse, ErrorResponse}
 import uk.gov.hmrc.apiplatformadminapi.services.ApisService
