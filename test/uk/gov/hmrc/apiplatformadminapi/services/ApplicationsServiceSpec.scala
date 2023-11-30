@@ -65,4 +65,24 @@ class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
       GetApplicationDevelopers.verifyNotCalled()
     }
   }
+
+  "getApplicationByClientId" should {
+    "return an application with the requested clientId" in new Setup {
+      GetApplicationByClientId.returns(applicationResponse)
+
+      val result = await(underTest.getApplicationByClientId(clientId))
+
+      result shouldBe Some(application)
+      GetApplicationByClientId.verifyCalledWith(clientId)
+    }
+
+    "return None if the application was not found" in new Setup {
+      GetApplicationByClientId.returnsNone()
+
+      val result = await(underTest.getApplicationByClientId(clientId))
+
+      result shouldBe None
+      GetApplicationByClientId.verifyCalledWith(clientId)
+    }
+  }
 }

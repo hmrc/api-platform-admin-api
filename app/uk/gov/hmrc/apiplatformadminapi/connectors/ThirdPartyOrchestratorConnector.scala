@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
 import uk.gov.hmrc.apiplatformadminapi.models.UserRequest
 
@@ -32,6 +32,10 @@ class ThirdPartyOrchestratorConnector @Inject() (http: HttpClient, config: Third
 
   def getApplication(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Option[ApplicationResponse]] = {
     http.GET[Option[ApplicationResponse]](url = s"${config.serviceBaseUrl}/applications/$applicationId")
+  }
+
+  def getApplicationByClientId(clientId: ClientId)(implicit hc: HeaderCarrier): Future[Option[ApplicationResponse]] = {
+    http.GET[Option[ApplicationResponse]](url = s"${config.serviceBaseUrl}/applications", queryParams = Seq("clientId" -> clientId.value))
   }
 
   def getApplicationDevelopers(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Set[Developer]] = {

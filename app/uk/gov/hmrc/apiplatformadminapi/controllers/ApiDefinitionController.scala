@@ -18,7 +18,6 @@ package uk.gov.hmrc.apiplatformadminapi.controllers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-import scala.util.control.NonFatal
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -27,11 +26,10 @@ import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 import uk.gov.hmrc.apiplatformadminapi.models.{ApiResponse, ErrorResponse}
 import uk.gov.hmrc.apiplatformadminapi.services.ApisService
-import uk.gov.hmrc.apiplatformadminapi.utils.ApplicationLogger
 
 @Singleton()
 class ApiDefinitionController @Inject() (apisService: ApisService, cc: ControllerComponents)(implicit ec: ExecutionContext)
-    extends BackendController(cc) with ApplicationLogger {
+    extends BackendController(cc) {
   private lazy val notFound = NotFound(ErrorResponse("NOT_FOUND", "API could not be found").asJson)
 
   def fetch(serviceName: ServiceName, environment: Environment): Action[AnyContent] = Action.async { implicit request =>
@@ -39,11 +37,6 @@ class ApiDefinitionController @Inject() (apisService: ApisService, cc: Controlle
       case Some(service) if environment == Environment.SANDBOX    => service.sandbox.map(apiDef => Ok(ApiResponse.from(apiDef).asJson)).getOrElse(notFound)
       case Some(service) if environment == Environment.PRODUCTION => service.production.map(apiDef => Ok(ApiResponse.from(apiDef).asJson)).getOrElse(notFound)
       case _                                                      => notFound
-    } recover {
-      case NonFatal(e) =>
-        val message = s"An unexpected error occurred: ${e.getMessage}"
-        logger.error(message)
-        InternalServerError(ErrorResponse("INTERNAL_SERVER_ERROR", message).asJson)
-    }
+    } recover recovery
   }
 }

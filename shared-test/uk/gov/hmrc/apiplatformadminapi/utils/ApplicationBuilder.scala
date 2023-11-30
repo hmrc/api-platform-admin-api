@@ -24,10 +24,10 @@ import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 
 trait ApplicationBuilder {
 
-  def buildApplication(applicationId: ApplicationId, applicationName: String, environment: Environment): ApplicationResponse = {
+  def buildApplication(applicationId: ApplicationId, clientId: ClientId, applicationName: String, environment: Environment): ApplicationResponse = {
     ApplicationResponse(
       id = applicationId,
-      clientId = ClientId.random,
+      clientId = clientId,
       gatewayId = "gateway-id",
       name = applicationName,
       deployedTo = environment,

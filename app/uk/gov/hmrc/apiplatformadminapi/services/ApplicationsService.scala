@@ -21,10 +21,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import uk.gov.hmrc.http.HeaderCarrier
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
 import uk.gov.hmrc.apiplatform.modules.common.services.EitherTHelper
 import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
-import uk.gov.hmrc.apiplatformadminapi.models.ApplicationWithUsers
+import uk.gov.hmrc.apiplatformadminapi.models.{Application, ApplicationWithUsers}
 
 @Singleton
 class ApplicationsService @Inject() (thirdPartyOrchestratorConnector: ThirdPartyOrchestratorConnector)(implicit val ec: ExecutionContext) {
@@ -39,5 +39,9 @@ class ApplicationsService @Inject() (thirdPartyOrchestratorConnector: ThirdParty
       } yield ApplicationWithUsers.from(applicationResponse, developers)
     )
       .value
+  }
+
+  def getApplicationByClientId(clientId: ClientId)(implicit hc: HeaderCarrier): Future[Option[Application]] = {
+    thirdPartyOrchestratorConnector.getApplicationByClientId(clientId).map(_.map(Application.from))
   }
 }

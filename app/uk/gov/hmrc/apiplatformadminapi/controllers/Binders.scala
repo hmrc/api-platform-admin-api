@@ -79,20 +79,4 @@ object Binders {
       }
       // $COVERAGE-ON$
     }
-
-  //  For next ticket
-  //  implicit def clientIdQueryStringBindable(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[ClientId] =
-  //    new QueryStringBindable[ClientId] {
-  //
-  //      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, ClientId]] = {
-  //        textBinder.bind(key, params).map {
-  //          case Right(clientId) => Right(ClientId(clientId))
-  //          case _               => Left("Unable to bind clientId")
-  //        }
-  //      }
-  //
-  //      override def unbind(key: String, clientId: ClientId): String = {
-  //        textBinder.unbind(key, clientId.toString)
-  //      }
-  //    }
 }

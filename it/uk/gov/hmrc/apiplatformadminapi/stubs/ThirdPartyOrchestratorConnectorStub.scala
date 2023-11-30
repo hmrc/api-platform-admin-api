@@ -17,52 +17,107 @@
 package uk.gov.hmrc.apiplatformadminapi.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
 import play.api.test.Helpers._
 
-import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.Developer
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
+import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
 trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
 
   object GetApplication {
 
-    def returns(applicationResponse: ApplicationResponse): Any =
+    def stubWithApplicationId(applicationId: ApplicationId): StubMapping =
       stubFor(
-        get(urlPathEqualTo(s"/applications/${applicationResponse.id}"))
+        get(urlPathEqualTo(s"/applications/$applicationId"))
           .willReturn(
             aResponse()
               .withStatus(OK)
-              .withJsonBody(applicationResponse)
+              .withBody(applicationResponseBody)
+          )
+      )
+  }
+
+  object GetApplicationByClientId {
+
+    def stubWithClientId(clientId: ClientId): StubMapping =
+      stubFor(
+        get(urlPathEqualTo(s"/applications"))
+          .withQueryParam("clientId", equalTo(clientId.value))
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withBody(applicationResponseBody)
           )
       )
   }
 
   object GetApplicationDevelopers {
 
-    def returnsFor(applicationId: ApplicationId, developers: Set[Developer]): Any =
+    def stubWithApplicationId(applicationId: ApplicationId): StubMapping =
       stubFor(
         get(urlPathEqualTo(s"/applications/$applicationId/developers"))
           .willReturn(
             aResponse()
               .withStatus(OK)
-              .withJsonBody(developers)
+              .withBody(s"[$developerResponseBody]")
           )
       )
   }
 
   object GetBySessionId {
 
-    def returns(developer: Developer): Any =
+    def stubWithSessionId(sessionId: SessionId): StubMapping =
       stubFor(
         post(urlPathEqualTo(s"/session/validate"))
+          .withRequestBody(equalTo(s"""{"sessionId":"${sessionId.value}"}"""))
           .willReturn(
             aResponse()
               .withStatus(OK)
-              .withJsonBody(developer)
+              .withBody(developerResponseBody)
           )
       )
   }
+
+  private val applicationResponseBody =
+    s"""{
+       |  "id": "967226ae-46ca-4b71-a76c-72efbc402a9b",
+       |  "clientId": "tl68AJH3PA8kKe7H9gxIatou2UTK",
+       |  "gatewayId": "gateway-id",
+       |  "name": "Application Name",
+       |  "deployedTo": "PRODUCTION",
+       |  "collaborators": [],
+       |  "createdOn": "2023-11-22T14:56:57.833Z",
+       |  "grantLength": 30,
+       |  "redirectUris": [],
+       |  "access": {
+       |    "redirectUris": [],
+       |    "overrides": [],
+       |    "accessType": "STANDARD"
+       |  },
+       |  "state": {
+       |    "name": "TESTING",
+       |    "updatedOn": "2023-11-22T14:56:57.833Z"
+       |  },
+       |  "rateLimitTier": "BRONZE",
+       |  "blocked": false,
+       |  "trusted": false,
+       |  "ipAllowlist": {
+       |    "required": false,
+       |    "allowlist": []
+       |  },
+       |  "moreApplication": {
+       |    "allowAutoDelete": false
+       |  }
+       |}""".stripMargin
+
+  private val developerResponseBody =
+    s"""{
+       |  "userId": "967226ae-46ca-4b71-a76c-72efbc402a9b",
+       |  "email": "test@test.com",
+       |  "firstName": "Ada",
+       |  "lastName": "Lovelace"
+       |}""".stripMargin
 }

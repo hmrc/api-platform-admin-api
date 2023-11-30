@@ -66,7 +66,7 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with User
       val result = underTest.userQuery()(FakeRequest().withTextBody("random"))
 
       status(result) shouldBe Status.BAD_REQUEST
-      contentAsJson(result) shouldBe ErrorResponse("Invalid payload", "Invalid Json").asJson
+      contentAsJson(result) shouldBe ErrorResponse("BAD_REQUEST", "Invalid JSON payload").asJson
     }
 
     "return 400 if the body is missing sessionId" in new Setup {
@@ -75,7 +75,7 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with User
       val result = underTest.userQuery()(FakeRequest().withJsonBody(Json.parse("{}")))
 
       status(result) shouldBe Status.BAD_REQUEST
-      contentAsJson(result) shouldBe ErrorResponse("Invalid payload", "Invalid Json").asJson
+      contentAsJson(result) shouldBe ErrorResponse("BAD_REQUEST", "Invalid JSON payload").asJson
     }
 
     "return 500 if there is an unexpected error" in new Setup {

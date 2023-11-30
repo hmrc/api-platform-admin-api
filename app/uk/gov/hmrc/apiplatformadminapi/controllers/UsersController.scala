@@ -18,18 +18,16 @@ package uk.gov.hmrc.apiplatformadminapi.controllers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-import scala.util.control.NonFatal
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import uk.gov.hmrc.apiplatformadminapi.models.{UserRequest, _}
 import uk.gov.hmrc.apiplatformadminapi.services.UsersService
-import uk.gov.hmrc.apiplatformadminapi.utils.ApplicationLogger
 
 @Singleton()
 class UsersController @Inject() (usersService: UsersService, cc: ControllerComponents)(implicit ec: ExecutionContext)
-    extends BackendController(cc) with ApplicationLogger with JsonUtils {
+    extends BackendController(cc) with JsonUtils {
 
   def userQuery(): Action[AnyContent] = Action.async { implicit request =>
     withJsonBodyFromAnyContent[UserRequest] { userRequest =>
@@ -37,12 +35,7 @@ class UsersController @Inject() (usersService: UsersService, cc: ControllerCompo
         usersService.getUserBySessionId(userRequest.sessionId) map {
           case Some(developer) => Ok(User.from(developer).asJson)
           case _               => NotFound(ErrorResponse("NOT_FOUND", "User could not be found").asJson)
-        } recover {
-          case NonFatal(e) =>
-            val message = s"An unexpected error occurred: ${e.getMessage}"
-            logger.error(message)
-            InternalServerError(ErrorResponse("INTERNAL_SERVER_ERROR", message).asJson)
-        }
+        } recover recovery
       }
     }
   }
