@@ -17,13 +17,18 @@
 package uk.gov.hmrc.apiplatformadminapi.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 import play.api.http.Status
 import play.api.mvc.request.RequestTarget
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
+import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
+import uk.gov.hmrc.internalauth.client.Retrieval
+import uk.gov.hmrc.internalauth.client.Predicate.Permission
+import uk.gov.hmrc.internalauth.client._
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationWithUsers, Applications, ErrorResponse}
 import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, HmrcSpec}
@@ -32,18 +37,21 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
   trait Setup extends ApplicationsServiceMockModule {
     implicit val hc = HeaderCarrier()
+    implicit val cc = Helpers.stubControllerComponents()
 
-    // Request is not interrogated for parameters or body, so a dummy for now; this will change when adding internal-auth
-    val fakeRequest = FakeRequest()
+    val fakeRequest = FakeRequest().withHeaders("Authorization" -> "Token 123456")
 
     val fakeRequestWithClientId = FakeRequest().withTarget(RequestTarget("GET", "/", Seq("clientId" -> Seq(clientId.value)).toMap))
 
-    val underTest = new ApplicationsController(mockApplicationsService, Helpers.stubControllerComponents())
+    val mockStubBehaviour = mock[StubBehaviour]
+    val underTest = new ApplicationsController(mockApplicationsService, cc, BackendAuthComponentsStub(mockStubBehaviour))
 
+    val expectedPredicate = Permission(Resource(ResourceType("api-platform-admin-api"), ResourceLocation("applications/all")), IAAction("READ"))
   }
 
   "getApplication" should {
     "return 200 and an Application body" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.EmptyRetrieval))
       GetApplicationWithUsers.returns(applicationWithUsers)
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
@@ -54,6 +62,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
     }
 
     "return 404 if the application cannot be found" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.EmptyRetrieval))
       GetApplicationWithUsers.returnsNotFound()
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
@@ -64,6 +73,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
     }
 
     "return 500 if there is an unexpected error" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.EmptyRetrieval))
       GetApplicationWithUsers.fails()
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
@@ -72,6 +82,14 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       contentAsJson(result) shouldBe ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred: bang").asJson
       GetApplicationWithUsers.verifyCalledWith(applicationId)
     }
+
+    // "return 401 if invalid authorisation token" in new Setup {
+    //   when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
+
+    //   val result = underTest.getApplication(applicationId)(fakeRequest)
+
+    //   status(result) shouldBe Status.UNAUTHORIZED
+    // }
   }
 
   "getApplicationByQueryParams" should {
