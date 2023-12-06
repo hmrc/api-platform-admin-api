@@ -39,7 +39,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
     implicit val hc = HeaderCarrier()
     implicit val cc = Helpers.stubControllerComponents()
 
-    val fakeRequest = FakeRequest().withHeaders("Authorization" -> "Token 123456")
+    val fakeRequest = FakeRequest().withHeaders("Authorization" -> "123456")
 
     val fakeRequestWithClientId = FakeRequest().withTarget(RequestTarget("GET", "/", Seq("clientId" -> Seq(clientId.value)).toMap))
 
@@ -51,7 +51,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
   "getApplication" should {
     "return 200 and an Application body" in new Setup {
-      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.EmptyRetrieval))
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.returns(applicationWithUsers)
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
@@ -62,7 +62,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
     }
 
     "return 404 if the application cannot be found" in new Setup {
-      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.EmptyRetrieval))
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.returnsNotFound()
 
       val result = underTest.getApplication(applicationId)(fakeRequest)
@@ -73,7 +73,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
     }
 
     "return 500 if there is an unexpected error" in new Setup {
-      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.EmptyRetrieval))
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.fails()
 
       val result = underTest.getApplication(applicationId)(fakeRequest)

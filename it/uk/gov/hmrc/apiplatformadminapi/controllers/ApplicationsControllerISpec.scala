@@ -44,7 +44,7 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
 
   trait Setup extends ThirdPartyOrchestratorConnectorStub with InternalAuthStub with ApplicationTestData {
 
-    val token = "Token 123456"
+    val token = "123456"
     val underTest = app.injector.instanceOf[ApplicationsController]
 
   }
