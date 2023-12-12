@@ -17,29 +17,38 @@
 package uk.gov.hmrc.apiplatformadminapi.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 import play.api.http.Status
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.internalauth.client.Predicate.Permission
+import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
+import uk.gov.hmrc.internalauth.client.{Retrieval, _}
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.apiplatformadminapi.mocks._
 import uk.gov.hmrc.apiplatformadminapi.models._
 import uk.gov.hmrc.apiplatformadminapi.utils.{ApiTestData, HmrcSpec}
 
-class ApisControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTestData {
+class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTestData {
 
   trait Setup {
     implicit val hc = HeaderCarrier()
+    implicit val cc = Helpers.stubControllerComponents()
 
-    val fakeRequest = FakeRequest()
+    val fakeRequest = FakeRequest().withHeaders("Authorization" -> "123456")
 
-    val underTest = new ApiDefinitionController(mockApisService, Helpers.stubControllerComponents())
+    val mockStubBehaviour = mock[StubBehaviour]
+    val underTest         = new ApiDefinitionController(mockApisService, cc, BackendAuthComponentsStub(mockStubBehaviour))
+
+    val expectedPredicate = Permission(Resource(ResourceType("api-platform-admin-api"), ResourceLocation("api-definitions/all")), IAAction("READ"))
   }
 
   "fetch" should {
     "return 200 and an Api body" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returns(anApiInBoth)
 
       val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)
@@ -50,6 +59,7 @@ class ApisControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTes
     }
 
     "return 404 if the api cannot be found in SANDBOX" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returns(anApiInProduction)
 
       val result = underTest.fetch(aServiceName, Environment.SANDBOX)(fakeRequest)
@@ -59,6 +69,7 @@ class ApisControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTes
     }
 
     "return 404 if the api cannot be found in PRODUCTION" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returns(anApiInSandbox)
 
       val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)
@@ -68,6 +79,7 @@ class ApisControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTes
     }
 
     "return 404 if the api cannot be found" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returnsNone()
 
       val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)
@@ -77,6 +89,7 @@ class ApisControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTes
     }
 
     "return 500 if there is an unexpected error" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.fails()
 
       val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)

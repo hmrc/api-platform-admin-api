@@ -41,6 +41,9 @@ trait ApplicationsServiceMockModule extends MockitoSugar with ArgumentMatchersSu
 
     def verifyCalledWith(applicationId: ApplicationId) =
       verify(mockApplicationsService).getApplicationWithUsers(eqTo(applicationId))(*)
+
+    def verifyNeverCalledWith(applicationId: ApplicationId) =
+      verify(mockApplicationsService, never).getApplicationWithUsers(eqTo(applicationId))(*)
   }
 
   object GetApplicationByClientId {

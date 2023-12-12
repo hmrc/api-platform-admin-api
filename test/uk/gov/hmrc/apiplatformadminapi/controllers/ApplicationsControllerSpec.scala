@@ -24,11 +24,10 @@ import play.api.mvc.request.RequestTarget
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-
-import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
-import uk.gov.hmrc.internalauth.client.Retrieval
 import uk.gov.hmrc.internalauth.client.Predicate.Permission
-import uk.gov.hmrc.internalauth.client._
+import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
+import uk.gov.hmrc.internalauth.client.{Retrieval, _}
+
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationWithUsers, Applications, ErrorResponse}
 import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, HmrcSpec}
@@ -41,10 +40,10 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
     val fakeRequest = FakeRequest().withHeaders("Authorization" -> "123456")
 
-    val fakeRequestWithClientId = FakeRequest().withTarget(RequestTarget("GET", "/", Seq("clientId" -> Seq(clientId.value)).toMap))
+    val fakeRequestWithClientId = FakeRequest().withTarget(RequestTarget("GET", "/", Seq("clientId" -> Seq(clientId.value)).toMap)).withHeaders("Authorization" -> "123456")
 
     val mockStubBehaviour = mock[StubBehaviour]
-    val underTest = new ApplicationsController(mockApplicationsService, cc, BackendAuthComponentsStub(mockStubBehaviour))
+    val underTest         = new ApplicationsController(mockApplicationsService, cc, BackendAuthComponentsStub(mockStubBehaviour))
 
     val expectedPredicate = Permission(Resource(ResourceType("api-platform-admin-api"), ResourceLocation("applications/all")), IAAction("READ"))
   }
@@ -83,17 +82,19 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       GetApplicationWithUsers.verifyCalledWith(applicationId)
     }
 
-    // "return 401 if invalid authorisation token" in new Setup {
-    //   when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
+    "return unauthorised when invalid token" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
 
-    //   val result = underTest.getApplication(applicationId)(fakeRequest)
-
-    //   status(result) shouldBe Status.UNAUTHORIZED
-    // }
+      intercept[UpstreamErrorResponse] {
+        await(underTest.getApplication(applicationId)(fakeRequest))
+      }
+      GetApplicationWithUsers.verifyNeverCalledWith(applicationId)
+    }
   }
 
   "getApplicationByQueryParams" should {
     "return 200 and an Application body" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationByClientId.returns(application)
 
       val result = underTest.getApplicationsByQueryParam()(fakeRequestWithClientId)
@@ -104,6 +105,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
     }
 
     "return 404 if the application cannot be found" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationByClientId.returnsNotFound()
 
       val result = underTest.getApplicationsByQueryParam()(fakeRequestWithClientId)
@@ -114,6 +116,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
     }
 
     "return 500 if there is an unexpected error" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationByClientId.fails()
 
       val result = underTest.getApplicationsByQueryParam()(fakeRequestWithClientId)
@@ -121,6 +124,14 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       contentAsJson(result) shouldBe ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred: bang").asJson
       GetApplicationByClientId.verifyCalledWith(clientId)
+    }
+
+    "return unauthorised when invalid token" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
+
+      intercept[UpstreamErrorResponse] {
+        await(underTest.getApplicationsByQueryParam()(fakeRequestWithClientId))
+      }
     }
   }
 }

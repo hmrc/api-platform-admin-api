@@ -42,5 +42,4 @@ trait InternalAuthStub extends WireMockExtensions {
       )
     }
   }
-
 }
