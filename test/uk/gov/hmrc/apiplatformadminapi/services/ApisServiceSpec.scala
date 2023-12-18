@@ -19,7 +19,7 @@ package uk.gov.hmrc.apiplatformadminapi.services
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApmConnectorMockModule
-import uk.gov.hmrc.apiplatformadminapi.utils._
+import uk.gov.hmrc.apiplatformadminapi.utils.{AsyncHmrcSpec, _}
 
 class ApisServiceSpec extends AsyncHmrcSpec with ApiTestData {
 

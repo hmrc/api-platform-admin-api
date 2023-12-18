@@ -24,9 +24,10 @@ import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
+import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 import uk.gov.hmrc.apiplatformadminapi.mocks._
 import uk.gov.hmrc.apiplatformadminapi.models._
-import uk.gov.hmrc.apiplatformadminapi.utils.{ApiTestData, HmrcSpec}
+import uk.gov.hmrc.apiplatformadminapi.utils.ApiTestData
 
 class ApisControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTestData {
 

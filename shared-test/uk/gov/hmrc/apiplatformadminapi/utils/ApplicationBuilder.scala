@@ -37,7 +37,6 @@ trait ApplicationBuilder {
       lastAccess = None,
       grantLength = 30,
       lastAccessTokenUsage = None,
-      redirectUris = List.empty,
       termsAndConditionsUrl = None,
       privacyPolicyUrl = None,
       access = Access.Standard(),

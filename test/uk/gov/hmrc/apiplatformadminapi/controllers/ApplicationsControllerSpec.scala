@@ -24,9 +24,10 @@ import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationWithUsers, Applications, ErrorResponse}
-import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, HmrcSpec}
+import uk.gov.hmrc.apiplatformadminapi.utils.ApplicationTestData
 
 class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
