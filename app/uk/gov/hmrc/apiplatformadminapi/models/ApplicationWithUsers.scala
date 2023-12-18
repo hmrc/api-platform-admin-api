@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apiplatformadminapi.models
 
-import play.api.libs.json.{JsValue, Json, OFormat}
+import play.api.libs.json.{Format, JsValue, Json, OFormat}
 
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
@@ -35,7 +35,7 @@ object User {
     lastName = developer.lastName
   )
 
-  implicit val format = Json.format[User]
+  implicit val format: Format[User] = Json.format[User]
 }
 
 case class ApplicationWithUsers(applicationId: ApplicationId, name: String, environment: Environment, users: Set[User]) {

@@ -31,7 +31,7 @@ import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, HmrcSpec}
 class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
   trait Setup extends ApplicationsServiceMockModule {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     // Request is not interrogated for parameters or body, so a dummy for now; this will change when adding internal-auth
     val fakeRequest = FakeRequest()

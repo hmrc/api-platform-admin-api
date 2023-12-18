@@ -31,7 +31,7 @@ import uk.gov.hmrc.apiplatformadminapi.utils.{ApiTestData, HmrcSpec}
 class ApisControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTestData {
 
   trait Setup {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val fakeRequest = FakeRequest()
 

@@ -32,7 +32,7 @@ import uk.gov.hmrc.apiplatformadminapi.utils.{HmrcSpec, UserTestData}
 class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with UserTestData {
 
   trait Setup {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val sessionId   = SessionId.random
     val fakeRequest = FakeRequest().withJsonBody(Json.toJson(UserRequest(sessionId)))
