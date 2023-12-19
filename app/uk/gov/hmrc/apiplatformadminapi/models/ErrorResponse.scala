@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.apiplatformadminapi.models
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{Format, JsValue, Json}
 
 case class ErrorResponse(code: String, message: String) {
   def asJson: JsValue = ErrorResponse.format.writes(this)
 }
 
 object ErrorResponse {
-  implicit val format = Json.format[ErrorResponse]
+  implicit val format: Format[ErrorResponse] = Json.format[ErrorResponse]
 }

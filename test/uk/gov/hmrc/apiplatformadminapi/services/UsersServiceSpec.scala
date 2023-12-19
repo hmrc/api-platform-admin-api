@@ -28,7 +28,7 @@ import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
 class UsersServiceSpec extends AsyncHmrcSpec with ThirdPartyOrchestratorConnectorMockModule {
 
   trait Setup {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val underTest = new UsersService(mockThirdPartyOrchestratorConnector)
 

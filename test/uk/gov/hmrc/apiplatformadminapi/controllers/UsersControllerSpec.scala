@@ -24,15 +24,16 @@ import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.apiplatformadminapi.mocks.UsersServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models.{ErrorResponse, User, UserRequest}
-import uk.gov.hmrc.apiplatformadminapi.utils.{HmrcSpec, UserTestData}
+import uk.gov.hmrc.apiplatformadminapi.utils.UserTestData
 
 class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with UserTestData {
 
   trait Setup {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val sessionId   = SessionId.random
     val fakeRequest = FakeRequest().withJsonBody(Json.toJson(UserRequest(sessionId)))

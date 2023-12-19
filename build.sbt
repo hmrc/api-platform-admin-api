@@ -10,9 +10,9 @@ lazy val appName = "api-platform-admin-api"
 lazy val plugins: Seq[Plugins]         = Seq(PlayScala, SbtDistributablesPlugin)
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
 
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.12"
 
-ThisBuild / scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0"
+ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 
@@ -62,10 +62,6 @@ lazy val microservice = Project(appName, file("."))
     )
   )
 
-commands += Command.command("testAll") { state =>
-  "test" :: "it:test" :: state
-}
-
 def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
   tests map { test =>
     Group(
@@ -78,7 +74,7 @@ def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] =
   }
 
 Global / bloopAggregateSourceDependencies := true
-
+Global / bloopExportJarClassifiers := Some(Set("sources"))
 
 commands ++= Seq(
   Command.command("run-all-tests") { state => "test" :: "it:test" :: state },

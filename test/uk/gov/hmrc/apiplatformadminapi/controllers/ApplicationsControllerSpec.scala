@@ -24,14 +24,15 @@ import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models.{ApplicationWithUsers, Applications, ErrorResponse}
-import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, HmrcSpec}
+import uk.gov.hmrc.apiplatformadminapi.utils.ApplicationTestData
 
 class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
   trait Setup extends ApplicationsServiceMockModule {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     // Request is not interrogated for parameters or body, so a dummy for now; this will change when adding internal-auth
     val fakeRequest = FakeRequest()

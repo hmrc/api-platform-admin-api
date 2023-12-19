@@ -32,7 +32,7 @@ trait ApiTestData {
   val apiVersions                       = Map(versionNbr -> ApiVersion(versionNbr, ApiStatus.STABLE, ApiAccess.PUBLIC, List(endpoint), true, None, ApiVersionSource.OAS))
   val apiVersionResponse                = Map(versionNbr -> VersionResponse(versionNbr, ApiStatus.STABLE, List(EndpointResponse(uriPattern, HttpMethod.GET))))
 
-  val anApiDefinition   = ApiDefinition(aServiceName, "http://localhost", name, description, apiContext, apiVersions, false, false, None, List.empty)
+  val anApiDefinition   = ApiDefinition(aServiceName, "http://localhost", name, description, apiContext, apiVersions, false, None, List.empty)
   val apiResponse       = ApiResponse(aServiceName, apiContext, name, description, apiVersionResponse)
   val anApiInBoth       = Locator.Both(anApiDefinition, anApiDefinition)
   val anApiInSandbox    = Locator.Sandbox(anApiDefinition)
