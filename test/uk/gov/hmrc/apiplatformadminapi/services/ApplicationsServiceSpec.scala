@@ -26,7 +26,7 @@ import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, AsyncHmrcSpec
 class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
 
   trait Setup extends ThirdPartyOrchestratorConnectorMockModule {
-    implicit val hc = HeaderCarrier()
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val underTest = new ApplicationsService(mockThirdPartyOrchestratorConnector)
 

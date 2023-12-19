@@ -21,23 +21,25 @@ import scala.concurrent.Future
 
 import play.api.http.Status
 import play.api.libs.json.Json
+import play.api.mvc.ControllerComponents
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.internalauth.client.Predicate.Permission
 import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
 import uk.gov.hmrc.internalauth.client.{Retrieval, _}
 
+import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
 import uk.gov.hmrc.apiplatformadminapi.mocks.UsersServiceMockModule
 import uk.gov.hmrc.apiplatformadminapi.models.{ErrorResponse, User, UserRequest}
-import uk.gov.hmrc.apiplatformadminapi.utils.{HmrcSpec, UserTestData}
+import uk.gov.hmrc.apiplatformadminapi.utils.UserTestData
 
 class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with UserTestData {
 
   trait Setup {
-    implicit val hc = HeaderCarrier()
-    implicit val cc = Helpers.stubControllerComponents()
+    implicit val hc: HeaderCarrier        = HeaderCarrier()
+    implicit val cc: ControllerComponents = Helpers.stubControllerComponents()
 
     val sessionId = SessionId.random
 
@@ -107,6 +109,16 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with User
 
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       contentAsJson(result) shouldBe ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred: bang").asJson
+    }
+
+    "return unauthorised when invalid token" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
+
+      val fakeRequest = FakeRequest().withJsonBody(Json.toJson(UserRequest(sessionId))).withHeaders("Authorization" -> "123456")
+
+      intercept[UpstreamErrorResponse] {
+        await(underTest.userQuery()(fakeRequest))
+      }
     }
   }
 }
