@@ -26,13 +26,14 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import uk.gov.hmrc.apiplatformadminapi.models._
-import uk.gov.hmrc.apiplatformadminapi.stubs.ApmConnectorStub
+import uk.gov.hmrc.apiplatformadminapi.stubs.{ApmConnectorStub, InternalAuthStub}
 import uk.gov.hmrc.apiplatformadminapi.utils.{ApiTestData, AsyncHmrcSpec}
 
 class ApiDefinitionControllerISpec extends AsyncHmrcSpec with WireMockSupport with GuiceOneAppPerSuite with ApmConnectorStub {
 
   val stubConfig = Configuration(
     "microservice.services.api-platform-microservice.port" -> wireMockPort,
+    "microservice.services.internal-auth.port"             -> wireMockPort,
     "metrics.enabled"                                      -> false,
     "auditing.enabled"                                     -> false
   )
@@ -41,49 +42,65 @@ class ApiDefinitionControllerISpec extends AsyncHmrcSpec with WireMockSupport wi
     .configure(stubConfig)
     .build()
 
-  trait Setup extends ApiTestData {
-    val underTest = app.injector.instanceOf[ApiDefinitionController]
+  trait Setup extends ApiTestData with InternalAuthStub {
 
+    val token     = "123456"
+    val underTest = app.injector.instanceOf[ApiDefinitionController]
   }
 
   "fetch" should {
 
     "return 200 on the agreed route" in new Setup {
+      Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val result = route(app, FakeRequest("GET", s"/apis?environment=SANDBOX&serviceName=${aServiceName}")).get
+      val fakeRequest = FakeRequest("GET", s"/apis?environment=SANDBOX&serviceName=${aServiceName}").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
       status(result) mustBe OK
       // the response body is tested in `tests/.../UsersControllerSpec` so not repeated here
     }
 
     "return 400 if no environment" in new Setup {
+      Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val result = route(app, FakeRequest("GET", s"/apis?serviceName=${aServiceName}")).get
+      val fakeRequest = FakeRequest("GET", s"/apis?serviceName=${aServiceName}").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) shouldBe ErrorResponse("BAD_REQUEST", "Missing parameter: environment").asJson
     }
 
     "return 400 if bad environment" in new Setup {
+      Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val result = route(app, FakeRequest("GET", s"/apis?environment=FISHBOWL&serviceName=${aServiceName}")).get
+      val fakeRequest = FakeRequest("GET", s"/apis?environment=FISHBOWL&serviceName=${aServiceName}").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) shouldBe ErrorResponse("BAD_REQUEST", "Not a valid environment").asJson
     }
 
     "return 400 if no serviceName" in new Setup {
+      Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val result = route(app, FakeRequest("GET", s"/apis?environment=SANDBOX")).get
+      val fakeRequest = FakeRequest("GET", s"/apis?environment=SANDBOX").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) shouldBe ErrorResponse("BAD_REQUEST", "Missing parameter: serviceName").asJson
     }
 
     "return 400 if no params" in new Setup {
+      Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val result = route(app, FakeRequest("GET", s"/apis")).get
+      val fakeRequest = FakeRequest("GET", s"/apis").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) shouldBe ErrorResponse("BAD_REQUEST", "Missing parameter: serviceName").asJson
     }

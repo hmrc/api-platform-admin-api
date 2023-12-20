@@ -26,13 +26,14 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import uk.gov.hmrc.apiplatformadminapi.models.ErrorResponse
-import uk.gov.hmrc.apiplatformadminapi.stubs.ThirdPartyOrchestratorConnectorStub
+import uk.gov.hmrc.apiplatformadminapi.stubs.{InternalAuthStub, ThirdPartyOrchestratorConnectorStub}
 import uk.gov.hmrc.apiplatformadminapi.utils.{ApplicationTestData, AsyncHmrcSpec}
 
 class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport with GuiceOneAppPerSuite {
 
   val stubConfig = Configuration(
     "microservice.services.third-party-orchestrator.port" -> wireMockPort,
+    "microservice.services.internal-auth.port"            -> wireMockPort,
     "metrics.enabled"                                     -> false,
     "auditing.enabled"                                    -> false
   )
@@ -41,18 +42,22 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
     .configure(stubConfig)
     .build()
 
-  trait Setup extends ThirdPartyOrchestratorConnectorStub with ApplicationTestData {
-    val underTest = app.injector.instanceOf[ApplicationsController]
+  trait Setup extends ThirdPartyOrchestratorConnectorStub with InternalAuthStub with ApplicationTestData {
 
+    val token     = "123456"
+    val underTest = app.injector.instanceOf[ApplicationsController]
   }
 
   "getApplication" should {
 
     "return 200 on the agreed route" in new Setup {
+      Authenticate.returns(token)
       GetApplication.stubWithApplicationId(applicationId)
       GetApplicationDevelopers.stubWithApplicationId(applicationId)
 
-      val result = route(app, FakeRequest("GET", s"/applications/$applicationId")).get
+      val fakeRequest = FakeRequest("GET", s"/applications/$applicationId").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
 
       status(result) mustBe OK
       // the response body is tested in `tests/.../ApplicationsControllerSpec` so not repeated here
@@ -70,23 +75,34 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
   "getApplicationsByQueryParam" should {
 
     "return 200 on the agreed route" in new Setup {
+      Authenticate.returns(token)
       GetApplicationByClientId.stubWithClientId(clientId)
 
-      val result = route(app, FakeRequest("GET", s"/applications?clientId=$clientId")).get
+      val fakeRequest = FakeRequest("GET", s"/applications?clientId=$clientId").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
 
       status(result) mustBe OK
       // the response body is tested in `tests/.../ApplicationsControllerSpec` so not repeated here
     }
 
     "return 400 when there are no query parameters" in new Setup {
-      val result = route(app, FakeRequest("GET", s"/applications")).get
+      Authenticate.returns(token)
+
+      val fakeRequest = FakeRequest("GET", s"/applications").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
 
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "Invalid or missing query parameters").asJson
     }
 
     "return 400 when the query parameters are not valid" in new Setup {
-      val result = route(app, FakeRequest("GET", s"/applications?x=a&y=b")).get
+      Authenticate.returns(token)
+
+      val fakeRequest = FakeRequest("GET", s"/applications?x=a&y=b").withHeaders("Authorization" -> token)
+
+      val result = route(app, fakeRequest).get
 
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "Invalid or missing query parameters").asJson
