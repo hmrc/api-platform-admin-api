@@ -84,12 +84,28 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       GetApplicationWithUsers.verifyCalledWith(applicationId)
     }
 
+    "return unauthorised when no token" in new Setup {
+      val result = underTest.getApplication(applicationId)(FakeRequest())
+
+      status(result) shouldBe Status.UNAUTHORIZED
+      GetApplicationWithUsers.verifyNeverCalledWith(applicationId)
+    }
+
     "return unauthorised when invalid token" in new Setup {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
 
-      intercept[UpstreamErrorResponse] {
-        await(underTest.getApplication(applicationId)(fakeRequest))
-      }
+      val result = underTest.getApplication(applicationId)(fakeRequest)
+
+      status(result) shouldBe Status.UNAUTHORIZED
+      GetApplicationWithUsers.verifyNeverCalledWith(applicationId)
+    }
+
+    "return forbidden when valid token but no permissions" in new Setup {
+      when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Forbidden", Status.FORBIDDEN)))
+
+      val result = underTest.getApplication(applicationId)(fakeRequest)
+
+      status(result) shouldBe Status.FORBIDDEN
       GetApplicationWithUsers.verifyNeverCalledWith(applicationId)
     }
   }

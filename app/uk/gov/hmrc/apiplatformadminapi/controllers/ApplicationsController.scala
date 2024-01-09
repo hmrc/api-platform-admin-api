@@ -32,7 +32,7 @@ class ApplicationsController @Inject() (applicationsService: ApplicationsService
     extends BackendController(cc) {
 
   def getApplication(applicationId: ApplicationId): Action[AnyContent] =
-    auth.authorizedAction(predicate = Predicate.Permission(Resource.from("api-platform-admin-api", "applications/all"), IAAction("READ"))).async {
+    auth.authorizedAction(predicate = Predicate.Permission(Resource.from("api-platform-admin-api", "applications/all"), IAAction("READ")), onUnauthorizedError = Future.successful(Unauthorized), onForbiddenError = Future.successful(Forbidden)).async {
       implicit request: AuthenticatedRequest[AnyContent, Unit] =>
         applicationsService.getApplicationWithUsers(applicationId).map {
           case Right(applicationWithUsers) => Ok(applicationWithUsers.asJson)

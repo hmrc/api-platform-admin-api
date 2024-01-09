@@ -70,6 +70,14 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
       status(result) mustBe BAD_REQUEST
       contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "applicationId is not a UUID").asJson
     }
+
+    "return 401 with no Authorisation header" in new Setup {
+      val fakeRequest = FakeRequest("GET", s"/applications/$applicationId")
+
+      val result = route(app, fakeRequest).get
+
+      status(result) mustBe UNAUTHORIZED
+    }
   }
 
   "getApplicationsByQueryParam" should {
