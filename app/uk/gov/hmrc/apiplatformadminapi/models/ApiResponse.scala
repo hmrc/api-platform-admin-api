@@ -45,7 +45,7 @@ object VersionResponse {
   }
 }
 
-case class ApiResponse(serviceName: ServiceName, apiContext: ApiContext, name: String, description: String, versions: Map[ApiVersionNbr, VersionResponse]) {
+case class ApiResponse(serviceName: ServiceName, context: ApiContext, name: String, description: String, versions: Map[ApiVersionNbr, VersionResponse]) {
   def asJson: JsObject = ApiResponse.apiFormat.writes(this)
 }
 
