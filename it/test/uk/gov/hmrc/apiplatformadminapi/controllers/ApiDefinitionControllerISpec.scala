@@ -54,7 +54,7 @@ class ApiDefinitionControllerISpec extends AsyncHmrcSpec with WireMockSupport wi
       Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val fakeRequest = FakeRequest("GET", s"/apis?environment=SANDBOX&serviceName=${aServiceName}").withHeaders("Authorization" -> token)
+      val fakeRequest = FakeRequest("GET", s"/apis?environment=SANDBOX&serviceName=$aServiceName").withHeaders("Authorization" -> token)
 
       val result = route(app, fakeRequest).get
       status(result) mustBe OK
@@ -65,7 +65,7 @@ class ApiDefinitionControllerISpec extends AsyncHmrcSpec with WireMockSupport wi
       Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val fakeRequest = FakeRequest("GET", s"/apis?serviceName=${aServiceName}").withHeaders("Authorization" -> token)
+      val fakeRequest = FakeRequest("GET", s"/apis?serviceName=$aServiceName").withHeaders("Authorization" -> token)
 
       val result = route(app, fakeRequest).get
       status(result) mustBe BAD_REQUEST
@@ -76,7 +76,7 @@ class ApiDefinitionControllerISpec extends AsyncHmrcSpec with WireMockSupport wi
       Authenticate.returns(token)
       FetchApi.returns(anApiInBoth)
 
-      val fakeRequest = FakeRequest("GET", s"/apis?environment=FISHBOWL&serviceName=${aServiceName}").withHeaders("Authorization" -> token)
+      val fakeRequest = FakeRequest("GET", s"/apis?environment=FISHBOWL&serviceName=$aServiceName").withHeaders("Authorization" -> token)
 
       val result = route(app, fakeRequest).get
       status(result) mustBe BAD_REQUEST
