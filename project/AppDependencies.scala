@@ -1,8 +1,4 @@
-
-import play.core.PlayVersion
-import play.sbt.PlayImport.*
-import sbt.Keys.libraryDependencies
-import sbt.*
+import sbt._
 
 object AppDependencies {
 

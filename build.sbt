@@ -1,6 +1,5 @@
-import bloop.integrations.sbt.BloopDefaults
 import uk.gov.hmrc.DefaultBuildSettings
-import uk.gov.hmrc.DefaultBuildSettings.*
+import uk.gov.hmrc.DefaultBuildSettings._
 
 lazy val appName = "api-platform-admin-api"
 
@@ -19,7 +18,10 @@ lazy val microservice = Project(appName, file("."))
   .settings(ScoverageSettings())
   .settings(
     libraryDependencies ++= AppDependencies(),
-    retrieveManaged := true
+    retrieveManaged := true,
+    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
+    // suppress warnings in generated routes files
+    scalacOptions += "-Wconf:src=routes/.*:s"
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
@@ -33,14 +35,6 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.apiplatform.modules.apis.domain.models._"
     )
   )
-  .settings(
-    scalacOptions ++= Seq(
-      // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
-      // suppress warnings in generated routes files
-      "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused&src=views/.*\\.scala:s"
-    )
-  )
 
 
 lazy val it = (project in file("it"))
@@ -50,8 +44,7 @@ lazy val it = (project in file("it"))
   .settings(
     name := "integration-tests",
     Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-eT"),
-    headerSettings(Test) ++ automateHeaderSettings(Test),
-    inConfig(Test)(BloopDefaults.configSettings),
+    DefaultBuildSettings.itSettings(),
     addTestReportOption(Test, "int-test-reports")
   )
 
