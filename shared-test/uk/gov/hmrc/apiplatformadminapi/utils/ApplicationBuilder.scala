@@ -16,13 +16,15 @@
 
 package uk.gov.hmrc.apiplatformadminapi.utils
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, ZoneOffset}
 
 import uk.gov.hmrc.apiplatform.modules.applications.access.domain.models.Access
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models._
 import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 
 trait ApplicationBuilder {
+
+  val instant = LocalDateTime.now.toInstant(ZoneOffset.UTC)
 
   def buildApplication(applicationId: ApplicationId, clientId: ClientId, applicationName: String, environment: Environment): ApplicationResponse = {
     ApplicationResponse(
@@ -33,14 +35,14 @@ trait ApplicationBuilder {
       deployedTo = environment,
       description = None,
       collaborators = Set.empty,
-      createdOn = LocalDateTime.now,
+      createdOn = instant,
       lastAccess = None,
-      grantLength = 30,
+      grantLength = GrantLength.ONE_MONTH,
       lastAccessTokenUsage = None,
       termsAndConditionsUrl = None,
       privacyPolicyUrl = None,
       access = Access.Standard(),
-      state = ApplicationState(name = State.TESTING, updatedOn = LocalDateTime.now),
+      state = ApplicationState(name = State.TESTING, updatedOn = instant),
       rateLimitTier = RateLimitTier.BRONZE,
       checkInformation = None,
       blocked = false,
