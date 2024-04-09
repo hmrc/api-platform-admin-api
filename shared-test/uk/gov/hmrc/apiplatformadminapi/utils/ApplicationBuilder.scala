@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apiplatformadminapi.utils
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.Instant
 
 import uk.gov.hmrc.apiplatform.modules.applications.access.domain.models.Access
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models._
@@ -24,7 +24,7 @@ import uk.gov.hmrc.apiplatform.modules.common.domain.models._
 
 trait ApplicationBuilder {
 
-  val instant = LocalDateTime.now.toInstant(ZoneOffset.UTC)
+  val instant = Instant.now
 
   def buildApplication(applicationId: ApplicationId, clientId: ClientId, applicationName: String, environment: Environment): ApplicationResponse = {
     ApplicationResponse(
