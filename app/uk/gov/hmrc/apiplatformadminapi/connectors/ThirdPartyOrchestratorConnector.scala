@@ -19,8 +19,10 @@ package uk.gov.hmrc.apiplatformadminapi.connectors
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
@@ -28,22 +30,26 @@ import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, Sess
 import uk.gov.hmrc.apiplatformadminapi.models.UserRequest
 
 @Singleton
-class ThirdPartyOrchestratorConnector @Inject() (http: HttpClient, config: ThirdPartyOrchestratorConnector.Config)(implicit ec: ExecutionContext) {
+class ThirdPartyOrchestratorConnector @Inject() (http: HttpClientV2, config: ThirdPartyOrchestratorConnector.Config)(implicit ec: ExecutionContext) {
 
   def getApplication(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Option[ApplicationResponse]] = {
-    http.GET[Option[ApplicationResponse]](url = s"${config.serviceBaseUrl}/applications/$applicationId")
+    http.get(url"${config.serviceBaseUrl}/applications/$applicationId")
+      .execute[Option[ApplicationResponse]]
   }
 
   def getApplicationByClientId(clientId: ClientId)(implicit hc: HeaderCarrier): Future[Option[ApplicationResponse]] = {
-    http.GET[Option[ApplicationResponse]](url = s"${config.serviceBaseUrl}/applications", queryParams = Seq("clientId" -> clientId.value))
+    http.get(url"${config.serviceBaseUrl}/applications?clientId=${clientId.value}")
+      .execute[Option[ApplicationResponse]]
   }
 
   def getApplicationDevelopers(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Set[Developer]] = {
-    http.GET[Set[Developer]](url = s"${config.serviceBaseUrl}/applications/$applicationId/developers")
+    http.get(url"${config.serviceBaseUrl}/applications/$applicationId/developers").execute[Set[Developer]]
   }
 
   def getBySessionId(sessionId: SessionId)(implicit hc: HeaderCarrier): Future[Option[Developer]] = {
-    http.POST[UserRequest, Option[Developer]](url = s"${config.serviceBaseUrl}/session/validate", body = UserRequest(sessionId))
+    http.post(url"${config.serviceBaseUrl}/session/validate")
+      .withBody(Json.toJson(UserRequest(sessionId)))
+      .execute[Option[Developer]]
   }
 }
 
