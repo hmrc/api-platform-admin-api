@@ -34,8 +34,8 @@ class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
 
   "getApplication" should {
     "return an application with the requested applicationId" in new Setup {
-      GetApplication.returns(applicationResponse)
-      GetApplicationDevelopers.returns(developers)
+      GetApplication.returns(standardApp)
+      GetApplicationDevelopers.returns(users)
 
       val result = await(underTest.getApplicationWithUsers(applicationId))
 
@@ -45,7 +45,7 @@ class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
     }
 
     "return an application with no developers" in new Setup {
-      GetApplication.returns(applicationResponse.copy(collaborators = Set.empty))
+      GetApplication.returns(standardApp.withCollaborators())
       GetApplicationDevelopers.returnsNoDevelopers()
 
       val result = await(underTest.getApplicationWithUsers(applicationId))
@@ -68,7 +68,7 @@ class ApplicationsServiceSpec extends AsyncHmrcSpec with ApplicationTestData {
 
   "getApplicationByClientId" should {
     "return an application with the requested clientId" in new Setup {
-      GetApplicationByClientId.returns(applicationResponse)
+      GetApplicationByClientId.returns(standardApp)
 
       val result = await(underTest.getApplicationByClientId(clientId))
 

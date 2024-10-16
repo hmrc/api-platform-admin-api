@@ -30,18 +30,19 @@ import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBeha
 import uk.gov.hmrc.internalauth.client.{Retrieval, _}
 
 import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
+import uk.gov.hmrc.apiplatform.modules.tpd.test.data.UserTestData
+import uk.gov.hmrc.apiplatform.modules.tpd.test.utils.LocalUserIdTracker
 import uk.gov.hmrc.apiplatformadminapi.mocks.UsersServiceMockModule
-import uk.gov.hmrc.apiplatformadminapi.models.{ErrorResponse, User, UserRequest}
-import uk.gov.hmrc.apiplatformadminapi.utils.UserTestData
+import uk.gov.hmrc.apiplatformadminapi.models.{ErrorResponse, UserRequest, UserResponse}
 
-class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with UserTestData {
+class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with UserTestData with LocalUserIdTracker {
 
   trait Setup {
     implicit val hc: HeaderCarrier        = HeaderCarrier()
     implicit val cc: ControllerComponents = Helpers.stubControllerComponents()
 
-    val sessionId = SessionId.random
+    val sessionId = UserSessionId.random
 
     val mockStubBehaviour = mock[StubBehaviour]
     val underTest         = new UsersController(mockService, cc, BackendAuthComponentsStub(mockStubBehaviour))
@@ -52,14 +53,14 @@ class UsersControllerSpec extends HmrcSpec with UsersServiceMockModule with User
   "userQuery" should {
     "return 200 and a User body" in new Setup {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
-      GetUserBySessionId.returns(developer)
+      GetUserBySessionId.returns(standardDeveloper)
 
       val fakeRequest = FakeRequest().withJsonBody(Json.toJson(UserRequest(sessionId))).withHeaders("Authorization" -> "123456")
 
       val result = underTest.userQuery()(fakeRequest)
 
       status(result) shouldBe Status.OK
-      contentAsJson(result).as[User] shouldBe user
+      contentAsJson(result).as[UserResponse] shouldBe UserResponse.from(standardDeveloper)
       GetUserBySessionId.verifyCalledWith(sessionId)
     }
 

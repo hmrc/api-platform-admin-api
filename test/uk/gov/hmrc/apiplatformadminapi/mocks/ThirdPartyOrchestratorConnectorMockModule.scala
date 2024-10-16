@@ -20,9 +20,10 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaborators
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
+import uk.gov.hmrc.apiplatform.modules.tpd.core.domain.models.User
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
 
 trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar {
@@ -31,7 +32,7 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
   object GetApplication {
 
-    def returns(application: ApplicationResponse) =
+    def returns(application: ApplicationWithCollaborators) =
       when(mockThirdPartyOrchestratorConnector.getApplication(*[ApplicationId])(*)).thenReturn(Future.successful(Some(application)))
 
     def returnsNone() =
@@ -43,7 +44,7 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
   object GetApplicationByClientId {
 
-    def returns(application: ApplicationResponse) =
+    def returns(application: ApplicationWithCollaborators) =
       when(mockThirdPartyOrchestratorConnector.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(Some(application)))
 
     def returnsNone() =
@@ -55,8 +56,8 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
   object GetApplicationDevelopers {
 
-    def returns(developers: Set[Developer]) =
-      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(*)).thenReturn(Future.successful(developers))
+    def returns(users: Set[User]) =
+      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(*)).thenReturn(Future.successful(users))
 
     def returnsNoDevelopers() =
       when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(*)).thenReturn(Future.successful(Set.empty))
@@ -70,13 +71,13 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
 
   object GetBySessionId {
 
-    def returns(developer: Developer) =
-      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[SessionId])(*)).thenReturn(Future.successful(Some(developer)))
+    def returns(developer: User) =
+      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(Some(developer)))
 
     def returnsNone() =
-      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[SessionId])(*)).thenReturn(Future.successful(None))
+      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(None))
 
-    def verifyCalledWith(sessionId: SessionId) =
+    def verifyCalledWith(sessionId: UserSessionId) =
       verify(mockThirdPartyOrchestratorConnector).getBySessionId(eqTo(sessionId))(*)
   }
 }

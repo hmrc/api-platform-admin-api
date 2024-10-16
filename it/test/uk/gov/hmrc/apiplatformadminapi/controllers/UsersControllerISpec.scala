@@ -26,10 +26,12 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.test.WireMockSupport
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
+import uk.gov.hmrc.apiplatform.modules.tpd.test.data.UserTestData
+import uk.gov.hmrc.apiplatform.modules.tpd.test.utils.LocalUserIdTracker
 import uk.gov.hmrc.apiplatformadminapi.models.{ErrorResponse, UserRequest}
 import uk.gov.hmrc.apiplatformadminapi.stubs.{InternalAuthStub, ThirdPartyOrchestratorConnectorStub}
-import uk.gov.hmrc.apiplatformadminapi.utils.{AsyncHmrcSpec, UserTestData}
+import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
 
 class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with GuiceOneAppPerSuite with ThirdPartyOrchestratorConnectorStub {
 
@@ -44,10 +46,10 @@ class UsersControllerISpec extends AsyncHmrcSpec with WireMockSupport with Guice
     .configure(stubConfig)
     .build()
 
-  trait Setup extends UserTestData with InternalAuthStub {
+  trait Setup extends UserTestData with LocalUserIdTracker with InternalAuthStub {
     val token     = "123456"
     val underTest = app.injector.instanceOf[ApplicationsController]
-    val sessionId = SessionId.random
+    val sessionId = UserSessionId.random
   }
 
   "userQuery" should {

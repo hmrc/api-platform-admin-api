@@ -21,13 +21,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import uk.gov.hmrc.http.HeaderCarrier
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
+import uk.gov.hmrc.apiplatform.modules.tpd.core.domain.models.User
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnector
 
 @Singleton
 class UsersService @Inject() (thirdPartyOrchestratorConnector: ThirdPartyOrchestratorConnector)(implicit val ec: ExecutionContext) {
 
-  def getUserBySessionId(sessionId: SessionId)(implicit hc: HeaderCarrier): Future[Option[Developer]] = {
+  def getUserBySessionId(sessionId: UserSessionId)(implicit hc: HeaderCarrier): Future[Option[User]] = {
     thirdPartyOrchestratorConnector.getBySessionId(sessionId)
   }
 }

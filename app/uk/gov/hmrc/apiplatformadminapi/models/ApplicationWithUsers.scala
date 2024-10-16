@@ -18,37 +18,37 @@ package uk.gov.hmrc.apiplatformadminapi.models
 
 import play.api.libs.json.{Format, JsValue, Json, OFormat}
 
-import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationResponse
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.{ApplicationName, ApplicationWithCollaborators}
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.Developer
+import uk.gov.hmrc.apiplatform.modules.tpd.core.domain.models.User
 
-case class User(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String) {
-  def asJson: JsValue = User.format.writes(this)
+case class UserResponse(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String) {
+  def asJson: JsValue = UserResponse.format.writes(this)
 }
 
-object User {
+object UserResponse {
 
-  def from(developer: Developer) = User(
-    userId = developer.userId,
-    email = developer.email,
-    firstName = developer.firstName,
-    lastName = developer.lastName
+  def from(user: User) = UserResponse(
+    userId = user.userId,
+    email = user.email,
+    firstName = user.firstName,
+    lastName = user.lastName
   )
 
-  implicit val format: Format[User] = Json.format[User]
+  implicit val format: Format[UserResponse] = Json.format[UserResponse]
 }
 
-case class ApplicationWithUsers(applicationId: ApplicationId, name: String, environment: Environment, users: Set[User]) {
+case class ApplicationWithUsers(applicationId: ApplicationId, name: ApplicationName, environment: Environment, users: Set[UserResponse]) {
   def asJson: JsValue = ApplicationWithUsers.format.writes(this)
 }
 
 object ApplicationWithUsers {
 
-  def from(applicationResponse: ApplicationResponse, developers: Set[Developer]) = ApplicationWithUsers(
+  def from(applicationResponse: ApplicationWithCollaborators, users: Set[User]) = ApplicationWithUsers(
     applicationId = applicationResponse.id,
     name = applicationResponse.name,
     environment = applicationResponse.deployedTo,
-    users = developers.map(User.from)
+    users = users.map(UserResponse.from)
   )
 
   implicit val format: OFormat[ApplicationWithUsers] = Json.format[ApplicationWithUsers]

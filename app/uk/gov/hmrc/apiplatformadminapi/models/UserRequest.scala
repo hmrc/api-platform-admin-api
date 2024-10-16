@@ -18,9 +18,9 @@ package uk.gov.hmrc.apiplatformadminapi.models
 
 import play.api.libs.json.{Format, Json}
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 
-case class UserRequest(sessionId: SessionId)
+case class UserRequest(sessionId: UserSessionId)
 
 object UserRequest {
   implicit val format: Format[UserRequest] = Json.format[UserRequest]
