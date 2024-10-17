@@ -18,7 +18,7 @@ This service uses internal auth to secure its endpoints.
 Add an authorisation token of '15505' by running:
 
 ```bash
-curl -X POST http://localhost:8470/test-only/token \
+curl -X POST "http://localhost:8470/test-only/token" \
 -H "content-type: application/json" \
 -d "{
   \"token\": \"15505\",
@@ -36,7 +36,7 @@ This token will remain in your local database for a year, so does not have to be
 Then call an endpoint such as:
 
 ```bash
-curl http://localhost:15505/applications/:applicationId -H "Authorization: 15505"
+curl "http://localhost:15505/applications/:applicationId" -H "Authorization: 15505"
 ```
 
 Use one of your local applicationIds for the path parameter `:applicationId`.
