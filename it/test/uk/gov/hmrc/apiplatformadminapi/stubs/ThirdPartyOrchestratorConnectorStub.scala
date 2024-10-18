@@ -19,17 +19,13 @@ package uk.gov.hmrc.apiplatformadminapi.stubs
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaboratorsFixtures
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
 import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
-import uk.gov.hmrc.apiplatform.modules.tpd.test.data.UserTestData
-import uk.gov.hmrc.apiplatform.modules.tpd.test.utils.LocalUserIdTracker
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
-trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions with ApplicationWithCollaboratorsFixtures with UserTestData with LocalUserIdTracker {
+trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
 
   object GetApplication {
 
@@ -85,8 +81,52 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions with Applic
       )
   }
 
-  private val applicationResponseBody = Json.toJson(standardApp).toString
+  private val applicationResponseBody =
+    s"""{
+       |  "id": "967226ae-46ca-4b71-a76c-72efbc402a9b",
+       |  "clientId": "tl68AJH3PA8kKe7H9gxIatou2UTK",
+       |  "gatewayId": "gateway-id",
+       |  "name": "Application Name",
+       |  "deployedTo": "PRODUCTION",
+       |  "collaborators": [],
+       |  "createdOn": "2023-11-22T14:56:57.833Z",
+       |  "grantLength": 30,
+       |  "redirectUris": [],
+       |  "access": {
+       |    "redirectUris": [],
+       |    "overrides": [],
+       |    "accessType": "STANDARD"
+       |  },
+       |  "state": {
+       |    "name": "TESTING",
+       |    "updatedOn": "2023-11-22T14:56:57.833Z"
+       |  },
+       |  "rateLimitTier": "BRONZE",
+       |  "blocked": false,
+       |  "trusted": false,
+       |  "ipAllowlist": {
+       |    "required": false,
+       |    "allowlist": []
+       |  },
+       |  "moreApplication": {
+       |    "allowAutoDelete": false,
+       |    "lastActionActor": "UNKNOWN"
+       |  }
+       |}""".stripMargin
 
-  private val userResponseBody = Json.toJson(standardDeveloper).toString
-
+  private val userResponseBody =
+    s"""{
+       |  "userId": "967226ae-46ca-4b71-a76c-72efbc402a9b",
+       |  "email": "test@test.com",
+       |  "firstName": "Ada",
+       |  "lastName": "Lovelace",
+       |  "registrationTime": "2023-09-21T19:25:41.251Z",
+       |  "lastModified": "2024-10-18T08:21:35.329Z",
+       |  "verified": true,
+       |  "mfaDetails": [],
+       |  "emailPreferences": {
+       |    "interests": [],
+       |    "topics": []
+       |  }
+       |}""".stripMargin
 }
