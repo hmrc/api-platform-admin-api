@@ -36,7 +36,7 @@ class UsersController @Inject() (usersService: UsersService, cc: ControllerCompo
         withJsonBodyFromAnyContent[UserRequest] { userRequest =>
           {
             usersService.getUserBySessionId(userRequest.sessionId) map {
-              case Some(developer) => Ok(User.from(developer).asJson)
+              case Some(developer) => Ok(UserResponse.from(developer).asJson)
               case _               => NotFound(ErrorResponse("NOT_FOUND", "User could not be found").asJson)
             } recover recovery
           }

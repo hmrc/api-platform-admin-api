@@ -20,7 +20,8 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
+import uk.gov.hmrc.apiplatform.modules.tpd.core.domain.models.User
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 import uk.gov.hmrc.apiplatformadminapi.services.UsersService
 
 trait UsersServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
@@ -29,16 +30,16 @@ trait UsersServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
 
   object GetUserBySessionId {
 
-    def returns(developer: Developer) =
-      when(mockService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.successful(Some(developer)))
+    def returns(user: User) =
+      when(mockService.getUserBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(Some(user)))
 
     def returnsNone() =
-      when(mockService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.successful(None))
+      when(mockService.getUserBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(None))
 
     def fails() =
-      when(mockService.getUserBySessionId(*[SessionId])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockService.getUserBySessionId(*[UserSessionId])(*)).thenReturn(Future.failed(new Exception("bang")))
 
-    def verifyCalledWith(sessionId: SessionId) =
+    def verifyCalledWith(sessionId: UserSessionId) =
       verify(mockService).getUserBySessionId(eqTo(sessionId))(*)
   }
 }

@@ -16,29 +16,28 @@
 
 package uk.gov.hmrc.apiplatformadminapi.utils
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models._
+import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaboratorsFixtures
+import uk.gov.hmrc.apiplatform.modules.tpd.test.data.UserTestData
+import uk.gov.hmrc.apiplatform.modules.tpd.test.utils.LocalUserIdTracker
 import uk.gov.hmrc.apiplatformadminapi.models._
 
-trait ApplicationTestData extends ApplicationBuilder with UserTestData {
-  val applicationId       = ApplicationId.random
-  val clientId            = ClientId.random
-  val appName             = "Application Name"
-  val environment         = Environment.PRODUCTION
-  val applicationResponse = buildApplication(applicationId, clientId, appName, environment)
+trait ApplicationTestData extends ApplicationWithCollaboratorsFixtures with UserTestData with LocalUserIdTracker {
+  val applicationId = standardApp.id
+  val clientId      = standardApp.clientId
 
-  val developers = Set(developer)
+  val users = Set(standardDeveloper)
 
   val applicationWithUsers = ApplicationWithUsers(
-    applicationId,
-    appName,
-    environment,
-    users = developers.map(User.from)
+    standardApp.id,
+    standardApp.name,
+    standardApp.deployedTo,
+    users = users.map(UserResponse.from)
   )
 
   val application = Application(
-    applicationId,
-    appName,
-    environment
+    standardApp.id,
+    standardApp.name,
+    standardApp.deployedTo
   )
 
   val applications = Applications(List(application))

@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.test.Helpers._
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.SessionId
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
 trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
@@ -62,21 +62,21 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
           .willReturn(
             aResponse()
               .withStatus(OK)
-              .withBody(s"[$developerResponseBody]")
+              .withBody(s"[$userResponseBody]")
           )
       )
   }
 
   object GetBySessionId {
 
-    def stubWithSessionId(sessionId: SessionId): StubMapping =
+    def stubWithSessionId(sessionId: UserSessionId): StubMapping =
       stubFor(
         post(urlPathEqualTo(s"/session/validate"))
           .withRequestBody(equalTo(s"""{"sessionId":"${sessionId.value}"}"""))
           .willReturn(
             aResponse()
               .withStatus(OK)
-              .withBody(developerResponseBody)
+              .withBody(userResponseBody)
           )
       )
   }
@@ -109,15 +109,24 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions {
        |    "allowlist": []
        |  },
        |  "moreApplication": {
-       |    "allowAutoDelete": false
+       |    "allowAutoDelete": false,
+       |    "lastActionActor": "UNKNOWN"
        |  }
        |}""".stripMargin
 
-  private val developerResponseBody =
+  private val userResponseBody =
     s"""{
        |  "userId": "967226ae-46ca-4b71-a76c-72efbc402a9b",
        |  "email": "test@test.com",
        |  "firstName": "Ada",
-       |  "lastName": "Lovelace"
+       |  "lastName": "Lovelace",
+       |  "registrationTime": "2023-09-21T19:25:41.251Z",
+       |  "lastModified": "2024-10-18T08:21:35.329Z",
+       |  "verified": true,
+       |  "mfaDetails": [],
+       |  "emailPreferences": {
+       |    "interests": [],
+       |    "topics": []
+       |  }
        |}""".stripMargin
 }

@@ -20,30 +20,29 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import uk.gov.hmrc.http.HeaderCarrier
 
-import uk.gov.hmrc.apiplatform.modules.common.domain.models.{LaxEmailAddress, UserId}
-import uk.gov.hmrc.apiplatform.modules.developers.domain.models.{Developer, SessionId}
+import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
+import uk.gov.hmrc.apiplatform.modules.tpd.test.data.UserTestData
+import uk.gov.hmrc.apiplatform.modules.tpd.test.utils.LocalUserIdTracker
 import uk.gov.hmrc.apiplatformadminapi.mocks.ThirdPartyOrchestratorConnectorMockModule
 import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
 
-class UsersServiceSpec extends AsyncHmrcSpec with ThirdPartyOrchestratorConnectorMockModule {
+class UsersServiceSpec extends AsyncHmrcSpec with ThirdPartyOrchestratorConnectorMockModule with UserTestData with LocalUserIdTracker {
 
   trait Setup {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     val underTest = new UsersService(mockThirdPartyOrchestratorConnector)
 
-    val sessionId = SessionId.random
-
-    val user = Developer(UserId.random, LaxEmailAddress("a@b.com"), "Dave", "Brown")
+    val sessionId = UserSessionId.random
   }
 
   "getUserBySessionId" should {
     "return a User with the requested sessionId" in new Setup {
-      GetBySessionId.returns(user)
+      GetBySessionId.returns(standardDeveloper)
 
       val result = await(underTest.getUserBySessionId(sessionId))
 
-      result shouldBe Some(user)
+      result shouldBe Some(standardDeveloper)
       GetBySessionId.verifyCalledWith(sessionId)
     }
 
