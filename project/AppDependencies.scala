@@ -3,7 +3,7 @@ import sbt._
 object AppDependencies {
 
   private val bootstrapVersion = "9.0.0"
-  private val appDomainVersion = "0.61.12"
+  private val appDomainVersion = "0.65.0"
   private val apiDomainVersion = "0.19.1"
   private val tpdDomainVersion = "0.10.0"
   
