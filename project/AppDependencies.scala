@@ -5,7 +5,7 @@ object AppDependencies {
   private val bootstrapVersion = "9.19.0"
   private val appDomainVersion = "0.82.0"
   private val apiDomainVersion = "0.19.1"
-  private val tpdDomainVersion = "0.10.0"
+  private val tpdDomainVersion = "0.13.0"
   
   def apply(): Seq[ModuleID] = compileDeps ++ testDeps
 
