@@ -3,9 +3,10 @@ import sbt._
 object AppDependencies {
 
   private val bootstrapVersion = "9.19.0"
-  private val appDomainVersion = "0.82.0"
-  private val apiDomainVersion = "0.19.1"
-  private val tpdDomainVersion = "0.13.0"
+  private val appDomainVersion = "0.87.0"
+  private val apiDomainVersion = "0.20.0"
+  private val tpdDomainVersion = "0.14.0"
+  private val mockitoScalaVersion = "2.0.0"
   
   def apply(): Seq[ModuleID] = compileDeps ++ testDeps
 
@@ -19,7 +20,7 @@ object AppDependencies {
 
   val testDeps = Seq(
     "uk.gov.hmrc"    %% "bootstrap-test-play-30"                    % bootstrapVersion,
-    "org.mockito"    %% "mockito-scala-scalatest"                   % "1.17.30",
+    "org.mockito"    %% "mockito-scala-scalatest"                   % mockitoScalaVersion,
     "uk.gov.hmrc"    %% "api-platform-application-domain-fixtures"  % appDomainVersion,
     "uk.gov.hmrc"    %% "api-platform-test-tpd-domain"              % tpdDomainVersion
   ).map(_ % "test")
