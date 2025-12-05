@@ -33,7 +33,8 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions with Applic
 
     def stubWithApplicationId(applicationId: ApplicationId): StubMapping =
       stubFor(
-        get(urlPathEqualTo(s"/applications/$applicationId"))
+        get(urlPathEqualTo(s"/query"))
+          .withQueryParam("applicationId", equalTo(applicationId.toString()))
           .willReturn(
             aResponse()
               .withStatus(OK)
@@ -46,8 +47,8 @@ trait ThirdPartyOrchestratorConnectorStub extends WireMockExtensions with Applic
 
     def stubWithClientId(clientId: ClientId): StubMapping =
       stubFor(
-        get(urlPathEqualTo(s"/applications"))
-          .withQueryParam("clientId", equalTo(clientId.value))
+        get(urlPathEqualTo(s"/query"))
+          .withQueryParam("clientId", equalTo(clientId.toString()))
           .willReturn(
             aResponse()
               .withStatus(OK)
