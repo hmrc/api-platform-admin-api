@@ -2,10 +2,10 @@ import sbt._
 
 object AppDependencies {
 
-  private val bootstrapVersion = "9.19.0"
-  private val appDomainVersion = "0.95.0"
-  private val apiDomainVersion = "0.20.0"
-  private val tpdDomainVersion = "0.14.0"
+  private val bootstrapVersion = "10.7.0"
+  private val appDomainVersion = "1.0.0"
+  private val apiDomainVersion = "0.22.0"
+  private val tpdDomainVersion = "0.12.0"
   private val mockitoScalaVersion = "2.0.0"
   
   def apply(): Seq[ModuleID] = compileDeps ++ testDeps
