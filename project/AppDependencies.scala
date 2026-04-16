@@ -15,7 +15,7 @@ object AppDependencies {
     "uk.gov.hmrc"    %% "api-platform-application-domain"   % appDomainVersion,
     "uk.gov.hmrc"    %% "api-platform-api-domain"           % apiDomainVersion,
     "uk.gov.hmrc"    %% "api-platform-tpd-domain"           % tpdDomainVersion,
-    "uk.gov.hmrc"    %% "internal-auth-client-play-30"      % "3.1.0"
+    "uk.gov.hmrc"    %% "internal-auth-client-play-30"      % "4.3.0"
   )
 
   val testDeps = Seq(
