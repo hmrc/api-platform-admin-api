@@ -29,7 +29,7 @@ trait ApiTestData {
   private val versionNbr: ApiVersionNbr = ApiVersionNbr("1.0")
   private val uriPattern                = "/hello/{user}"
   private val endpoint: Endpoint        = Endpoint(uriPattern, "hello user", HttpMethod.GET, AuthType.USER, ResourceThrottlingTier.UNLIMITED, None, List(QueryParameter("user", true)))
-  val apiVersions                       = Map(versionNbr -> ApiVersion(versionNbr, ApiStatus.STABLE, ApiAccess.PUBLIC, List(endpoint), true, None, ApiVersionSource.OAS))
+  val apiVersions                       = Map(versionNbr -> ApiVersion(versionNbr, ApiStatus.STABLE, ApiAccessType.PUBLIC, List(endpoint), true, None, ApiVersionSource.OAS))
   val apiVersionResponse                = Map(versionNbr -> VersionResponse(versionNbr, ApiStatus.STABLE, List(EndpointResponse(uriPattern, HttpMethod.GET))))
 
   val anApiDefinition   = ApiDefinition(aServiceName, "http://localhost", name, description, apiContext, apiVersions, false, None, List.empty)
