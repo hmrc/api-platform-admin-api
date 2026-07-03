@@ -20,12 +20,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaborators
-import uk.gov.hmrc.apiplatform.modules.applications.query.domain.models.ParamNames
+import uk.gov.hmrc.apiplatform.modules.applications.query.domain.models.ParamName
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
 import uk.gov.hmrc.apiplatform.modules.tpd.core.domain.models.User
 import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
@@ -35,12 +36,12 @@ import uk.gov.hmrc.apiplatformadminapi.models.UserRequest
 class ThirdPartyOrchestratorConnector @Inject() (http: HttpClientV2, config: ThirdPartyOrchestratorConnector.Config)(implicit ec: ExecutionContext) {
 
   def getApplication(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
-    http.get(url"${config.serviceBaseUrl}/query?${ParamNames.ApplicationId}=$applicationId")
+    http.get(url"${config.serviceBaseUrl}/query?${ParamName.ApplicationId}=$applicationId")
       .execute[Option[ApplicationWithCollaborators]]
   }
 
   def getApplicationByClientId(clientId: ClientId)(implicit hc: HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
-    http.get(url"${config.serviceBaseUrl}/query?${ParamNames.ClientId}=$clientId")
+    http.get(url"${config.serviceBaseUrl}/query?${ParamName.ClientId}=$clientId")
       .execute[Option[ApplicationWithCollaborators]]
   }
 

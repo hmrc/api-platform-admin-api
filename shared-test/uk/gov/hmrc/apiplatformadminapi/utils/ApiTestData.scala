@@ -16,23 +16,35 @@
 
 package uk.gov.hmrc.apiplatformadminapi.utils
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApiContext, ApiVersionNbr}
-import uk.gov.hmrc.apiplatformadminapi.models._
+import uk.gov.hmrc.apiplatformadminapi.models.*
 
 trait ApiTestData {
   val aServiceName: ServiceName = ServiceName("hello-world")
 
   private val apiContext: ApiContext    = ApiContext("hello")
-  private val name                      = "hello"
+  private val name                      = Endpoint.Name("hello")
   private val description               = "a default def"
   private val versionNbr: ApiVersionNbr = ApiVersionNbr("1.0")
-  private val uriPattern                = "/hello/{user}"
-  private val endpoint: Endpoint        = Endpoint(uriPattern, "hello user", HttpMethod.GET, AuthType.USER, ResourceThrottlingTier.UNLIMITED, None, List(QueryParameter("user", true)))
-  val apiVersions                       = Map(versionNbr -> ApiVersion(versionNbr, ApiStatus.STABLE, ApiAccessType.PUBLIC, List(endpoint), true, None, ApiVersionSource.OAS))
-  val apiVersionResponse                = Map(versionNbr -> VersionResponse(versionNbr, ApiStatus.STABLE, List(EndpointResponse(uriPattern, HttpMethod.GET))))
+  private val uriPattern                = Endpoint.UriPattern("/hello/{user}")
 
-  val anApiDefinition   = ApiDefinition(aServiceName, "http://localhost", name, description, apiContext, apiVersions, false, None, List.empty)
+  private val endpoint: Endpoint =
+    Endpoint(uriPattern, Endpoint.Name("hello user"), HttpMethod.Get, AuthType.User, ResourceThrottlingTier.Unlimited, None, List(QueryParameter("user", true)))
+  val apiVersions                = Map(versionNbr -> ApiVersion(versionNbr, ApiStatus.Stable, ApiAccessType.Public, List(endpoint), true, None, ApiVersionSource.OAS))
+  val apiVersionResponse         = Map(versionNbr -> VersionResponse(versionNbr, ApiStatus.Stable, List(EndpointResponse(uriPattern, HttpMethod.Get))))
+
+  val anApiDefinition   = ApiDefinition(
+    aServiceName,
+    ApiDefinition.ServiceBaseUrl("http://localhost"),
+    ApiDefinition.Name(name),
+    ApiDefinition.Description(description),
+    apiContext,
+    apiVersions,
+    false,
+    None,
+    List.empty
+  )
   val apiResponse       = ApiResponse(aServiceName, apiContext, name, description, apiVersionResponse)
   val anApiInBoth       = Locator.Both(anApiDefinition, anApiDefinition)
   val anApiInSandbox    = Locator.Sandbox(anApiDefinition)

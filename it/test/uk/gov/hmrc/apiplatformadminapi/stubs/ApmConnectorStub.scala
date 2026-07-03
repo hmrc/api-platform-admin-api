@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.apiplatformadminapi.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 
-import play.api.test.Helpers._
+import play.api.libs.json.OFormat
+import play.api.test.Helpers.*
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatformadminapi.utils.WireMockExtensions
 
 trait ApmConnectorStub extends WireMockExtensions {
@@ -28,7 +29,7 @@ trait ApmConnectorStub extends WireMockExtensions {
   object FetchApi {
 
     def returns(definition: Locator[ApiDefinition]): Any = {
-      implicit val format = Locator.buildLocatorFormatter[ApiDefinition]
+      implicit val format: OFormat[Locator[ApiDefinition]] = Locator.buildLocatorFormatter[ApiDefinition]
       stubFor(
         get(urlPathEqualTo(s"/api-definitions/service-name/${definition.production.orElse(definition.sandbox).get.serviceName}"))
           .willReturn(

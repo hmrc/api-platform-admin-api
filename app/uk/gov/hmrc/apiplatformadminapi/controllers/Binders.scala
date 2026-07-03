@@ -22,8 +22,8 @@ import scala.util.control.Exception.allCatch
 import play.api.Logger
 import play.api.mvc.{PathBindable, QueryStringBindable}
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
-import uk.gov.hmrc.apiplatform.modules.common.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
+import uk.gov.hmrc.apiplatform.modules.common.domain.models.*
 
 object Binders {
   val logger = Logger("binders")
@@ -45,9 +45,7 @@ object Binders {
       }
     }
 
-    override def unbind(key: String, serviceName: ServiceName): String = {
-      serviceName.value
-    }
+    override def unbind(key: String, serviceName: ServiceName): String = serviceName
   }
 
   implicit def environmentQueryBinder(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[Environment] = new QueryStringBindable[Environment] {

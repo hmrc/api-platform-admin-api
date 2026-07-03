@@ -22,12 +22,12 @@ import scala.concurrent.Future
 import play.api.http.Status
 import play.api.mvc.ControllerComponents
 import play.api.mvc.request.RequestTarget
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.internalauth.client.Predicate.Permission
 import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
-import uk.gov.hmrc.internalauth.client.{Retrieval, _}
+import uk.gov.hmrc.internalauth.client.{Retrieval, *}
 
 import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
@@ -55,7 +55,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.returns(applicationWithUsers)
 
-      val result = underTest.getApplication(applicationId)(fakeRequest)
+      val result = underTest.getApplication(applicationId.value)(fakeRequest)
 
       status(result) shouldBe Status.OK
       contentAsJson(result).as[ApplicationWithUsers] shouldBe applicationWithUsers
@@ -66,7 +66,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.returnsNotFound()
 
-      val result = underTest.getApplication(applicationId)(fakeRequest)
+      val result = underTest.getApplication(applicationId.value)(fakeRequest)
 
       status(result) shouldBe Status.NOT_FOUND
       contentAsJson(result) shouldBe ErrorResponse("NOT_FOUND", "Application could not be found").asJson
@@ -77,7 +77,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.fails()
 
-      val result = underTest.getApplication(applicationId)(fakeRequest)
+      val result = underTest.getApplication(applicationId.value)(fakeRequest)
 
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       contentAsJson(result) shouldBe ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred: bang").asJson
@@ -88,7 +88,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
 
       intercept[UpstreamErrorResponse] {
-        await(underTest.getApplication(applicationId)(fakeRequest))
+        await(underTest.getApplication(applicationId.value)(fakeRequest))
       }
       GetApplicationWithUsers.verifyNeverCalledWith(applicationId)
     }

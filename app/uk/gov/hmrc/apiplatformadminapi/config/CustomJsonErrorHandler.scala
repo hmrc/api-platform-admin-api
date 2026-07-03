@@ -41,7 +41,7 @@ class CustomJsonErrorHandler @Inject() (
     statusCode match {
       case BAD_REQUEST if !message.contains("Invalid Json") =>
         // Handle the failure of the Binders
-        implicit val headerCarrier: HeaderCarrier = hc(request)
+        implicit val headerCarrier: HeaderCarrier = hc(using request)
         auditConnector.sendEvent(
           httpAuditEvent.dataEvent(
             eventType = "ServerValidationError",

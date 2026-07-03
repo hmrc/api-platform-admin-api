@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.apiplatformadminapi.controllers
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import uk.gov.hmrc.apiplatformadminapi.models.ErrorResponse
@@ -55,7 +55,7 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
       GetApplication.stubWithApplicationId(applicationId)
       GetApplicationDevelopers.stubWithApplicationId(applicationId)
 
-      val fakeRequest = FakeRequest("GET", s"/applications/$applicationId").withHeaders("Authorization" -> token)
+      val fakeRequest = FakeRequest("GET", s"/applications/${applicationId.value}").withHeaders("Authorization" -> token)
 
       val result = route(app, fakeRequest).get
 

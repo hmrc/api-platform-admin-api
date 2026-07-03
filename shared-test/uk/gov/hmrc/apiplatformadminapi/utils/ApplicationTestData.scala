@@ -19,7 +19,7 @@ package uk.gov.hmrc.apiplatformadminapi.utils
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaboratorsFixtures
 import uk.gov.hmrc.apiplatform.modules.tpd.test.data.UserTestData
 import uk.gov.hmrc.apiplatform.modules.tpd.test.utils.LocalUserIdTracker
-import uk.gov.hmrc.apiplatformadminapi.models._
+import uk.gov.hmrc.apiplatformadminapi.models.*
 
 trait ApplicationTestData extends ApplicationWithCollaboratorsFixtures with UserTestData with LocalUserIdTracker {
   val applicationId = standardApp.id

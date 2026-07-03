@@ -31,15 +31,15 @@ trait UsersServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
   object GetUserBySessionId {
 
     def returns(user: User) =
-      when(mockService.getUserBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(Some(user)))
+      when(mockService.getUserBySessionId(*[UserSessionId])(using *)).thenReturn(Future.successful(Some(user)))
 
     def returnsNone() =
-      when(mockService.getUserBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(None))
+      when(mockService.getUserBySessionId(*[UserSessionId])(using *)).thenReturn(Future.successful(None))
 
     def fails() =
-      when(mockService.getUserBySessionId(*[UserSessionId])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockService.getUserBySessionId(*[UserSessionId])(using *)).thenReturn(Future.failed(new Exception("bang")))
 
     def verifyCalledWith(sessionId: UserSessionId) =
-      verify(mockService).getUserBySessionId(eqTo(sessionId))(*)
+      verify(mockService).getUserBySessionId(eqTo(sessionId))(using *)
   }
 }

@@ -20,7 +20,7 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatformadminapi.services.ApisService
 
 trait ApisServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
@@ -30,15 +30,15 @@ trait ApisServiceMockModule extends MockitoSugar with ArgumentMatchersSugar {
   object FetchApi {
 
     def returns(api: Locator[ApiDefinition]) =
-      when(mockApisService.fetchApi(*[ServiceName])(*)).thenReturn(Future.successful(Some(api)))
+      when(mockApisService.fetchApi(*[ServiceName])(using *)).thenReturn(Future.successful(Some(api)))
 
     def returnsNone() =
-      when(mockApisService.fetchApi(*[ServiceName])(*)).thenReturn(Future.successful(None))
+      when(mockApisService.fetchApi(*[ServiceName])(using *)).thenReturn(Future.successful(None))
 
     def fails() =
-      when(mockApisService.fetchApi(*[ServiceName])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockApisService.fetchApi(*[ServiceName])(using *)).thenReturn(Future.failed(new Exception("bang")))
 
     def verifyCalledWith(serviceName: ServiceName) =
-      verify(mockApisService).fetchApi(eqTo(serviceName))(*)
+      verify(mockApisService).fetchApi(eqTo(serviceName))(using *)
   }
 }
