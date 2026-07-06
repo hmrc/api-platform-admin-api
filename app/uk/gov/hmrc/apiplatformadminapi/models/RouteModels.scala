@@ -27,7 +27,6 @@ import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
 
 object RouteModels {
   case class SimpleApplicationId(value: UUID) extends AnyVal
-  case class SimpleUserId(value: UUID)        extends AnyVal
   type SimpleServiceName = String
 
   val logger = Logger("RoutesModels")
