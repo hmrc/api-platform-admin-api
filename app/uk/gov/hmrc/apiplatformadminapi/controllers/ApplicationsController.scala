@@ -29,8 +29,8 @@ import uk.gov.hmrc.apiplatformadminapi.models.{Applications, ErrorResponse}
 import uk.gov.hmrc.apiplatformadminapi.services.ApplicationsService
 
 @Singleton()
-class ApplicationsController @Inject() (applicationsService: ApplicationsService, cc: ControllerComponents, auth: BackendAuthComponents)(implicit ec: ExecutionContext)
-    extends BackendController(cc) {
+class ApplicationsController @Inject() (applicationsService: ApplicationsService, cc: ControllerComponents, auth: BackendAuthComponents)(using ec: ExecutionContext)
+    extends BackendController(cc) with JsonUtils {
 
   def getApplication(applicationId: UUID): Action[AnyContent] =
     auth.authorizedAction(predicate = Predicate.Permission(Resource.from("api-platform-admin-api", "applications/all"), IAAction("READ"))).async {

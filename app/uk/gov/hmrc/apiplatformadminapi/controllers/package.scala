@@ -23,8 +23,9 @@ import play.api.mvc.Result
 import play.api.mvc.Results.*
 
 import uk.gov.hmrc.apiplatformadminapi.models.ErrorResponse
+import uk.gov.hmrc.apiplatformadminapi.utils.AsJson
 
-package object controllers {
+package object controllers extends AsJson {
 
   val logger = Logger("controllers")
 

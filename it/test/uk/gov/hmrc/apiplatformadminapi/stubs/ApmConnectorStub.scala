@@ -29,7 +29,7 @@ trait ApmConnectorStub extends WireMockExtensions {
   object FetchApi {
 
     def returns(definition: Locator[ApiDefinition]): Any = {
-      implicit val format: OFormat[Locator[ApiDefinition]] = Locator.buildLocatorFormatter[ApiDefinition]
+      given OFormat[Locator[ApiDefinition]] = Locator.buildLocatorFormatter[ApiDefinition]
       stubFor(
         get(urlPathEqualTo(s"/api-definitions/service-name/${definition.production.orElse(definition.sandbox).get.serviceName}"))
           .willReturn(

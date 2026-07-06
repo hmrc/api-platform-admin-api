@@ -24,7 +24,7 @@ import uk.gov.hmrc.apiplatform.modules.common.domain.models.*
 case class EndpointResponse(uriPattern: String, method: HttpMethod)
 
 object EndpointResponse {
-  implicit val endpointFormat: OFormat[EndpointResponse] = Json.format[EndpointResponse]
+  given OFormat[EndpointResponse] = Json.format[EndpointResponse]
 
   def from(endpoint: Endpoint): EndpointResponse = {
     EndpointResponse(endpoint.uriPattern, endpoint.method)
@@ -34,7 +34,7 @@ object EndpointResponse {
 case class VersionResponse(versionNbr: ApiVersionNbr, status: ApiStatus, endpoints: List[EndpointResponse])
 
 object VersionResponse {
-  implicit val apiFormat: OFormat[VersionResponse] = Json.format[VersionResponse]
+  given OFormat[VersionResponse] = Json.format[VersionResponse]
 
   def from(apiVersion: ApiVersion): VersionResponse = {
     VersionResponse(apiVersion.versionNbr, apiVersion.status, apiVersion.endpoints.map(EndpointResponse.from))
@@ -45,12 +45,10 @@ object VersionResponse {
   }
 }
 
-case class ApiResponse(serviceName: ServiceName, context: ApiContext, name: String, description: String, versions: Map[ApiVersionNbr, VersionResponse]) {
-  def asJson: JsObject = ApiResponse.apiFormat.writes(this)
-}
+case class ApiResponse(serviceName: ServiceName, context: ApiContext, name: String, description: String, versions: Map[ApiVersionNbr, VersionResponse])
 
 object ApiResponse {
-  implicit val apiFormat: OFormat[ApiResponse] = Json.format[ApiResponse]
+  given OFormat[ApiResponse] = Json.format[ApiResponse]
 
   def from(apiDefinition: ApiDefinition): ApiResponse = {
     ApiResponse(apiDefinition.serviceName, apiDefinition.context, apiDefinition.name, apiDefinition.description, VersionResponse.from(apiDefinition.versions))

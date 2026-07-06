@@ -37,8 +37,8 @@ import uk.gov.hmrc.apiplatformadminapi.utils.ApplicationTestData
 class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
   trait Setup extends ApplicationsServiceMockModule {
-    implicit val hc: HeaderCarrier        = HeaderCarrier()
-    implicit val cc: ControllerComponents = Helpers.stubControllerComponents()
+    given HeaderCarrier            = HeaderCarrier()
+    given cc: ControllerComponents = Helpers.stubControllerComponents()
 
     val fakeRequest = FakeRequest().withHeaders("Authorization" -> "123456")
 

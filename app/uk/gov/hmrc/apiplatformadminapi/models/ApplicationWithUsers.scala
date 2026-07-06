@@ -22,9 +22,7 @@ import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.{Applicat
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment, LaxEmailAddress, UserId}
 import uk.gov.hmrc.apiplatform.modules.tpd.core.domain.models.User
 
-case class UserResponse(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String) {
-  def asJson: JsValue = UserResponse.format.writes(this)
-}
+case class UserResponse(userId: UserId, email: LaxEmailAddress, firstName: String, lastName: String)
 
 object UserResponse {
 
@@ -35,12 +33,10 @@ object UserResponse {
     lastName = user.lastName
   )
 
-  implicit val format: Format[UserResponse] = Json.format[UserResponse]
+  given Format[UserResponse] = Json.format[UserResponse]
 }
 
-case class ApplicationWithUsers(applicationId: ApplicationId, name: ApplicationName, environment: Environment, users: Set[UserResponse]) {
-  def asJson: JsValue = ApplicationWithUsers.format.writes(this)
-}
+case class ApplicationWithUsers(applicationId: ApplicationId, name: ApplicationName, environment: Environment, users: Set[UserResponse])
 
 object ApplicationWithUsers {
 
@@ -51,5 +47,5 @@ object ApplicationWithUsers {
     users = users.map(UserResponse.from)
   )
 
-  implicit val format: OFormat[ApplicationWithUsers] = Json.format[ApplicationWithUsers]
+  given OFormat[ApplicationWithUsers] = Json.format[ApplicationWithUsers]
 }

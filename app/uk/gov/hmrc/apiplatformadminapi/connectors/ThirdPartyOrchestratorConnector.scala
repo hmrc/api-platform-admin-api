@@ -32,23 +32,23 @@ import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 import uk.gov.hmrc.apiplatformadminapi.models.UserRequest
 
 @Singleton
-class ThirdPartyOrchestratorConnector @Inject() (http: HttpClientV2, config: ThirdPartyOrchestratorConnector.Config)(implicit ec: ExecutionContext) {
+class ThirdPartyOrchestratorConnector @Inject() (http: HttpClientV2, config: ThirdPartyOrchestratorConnector.Config)(using ExecutionContext) {
 
-  def getApplication(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
+  def getApplication(applicationId: ApplicationId)(using HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
     http.get(url"${config.serviceBaseUrl}/query?applicationId=$applicationId")
       .execute[Option[ApplicationWithCollaborators]]
   }
 
-  def getApplicationByClientId(clientId: ClientId)(implicit hc: HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
+  def getApplicationByClientId(clientId: ClientId)(using HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
     http.get(url"${config.serviceBaseUrl}/query?clientId=$clientId")
       .execute[Option[ApplicationWithCollaborators]]
   }
 
-  def getApplicationDevelopers(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Set[User]] = {
+  def getApplicationDevelopers(applicationId: ApplicationId)(using HeaderCarrier): Future[Set[User]] = {
     http.get(url"${config.serviceBaseUrl}/applications/$applicationId/developers").execute[Set[User]]
   }
 
-  def getBySessionId(sessionId: UserSessionId)(implicit hc: HeaderCarrier): Future[Option[User]] = {
+  def getBySessionId(sessionId: UserSessionId)(using HeaderCarrier): Future[Option[User]] = {
     http.post(url"${config.serviceBaseUrl}/session/validate")
       .withBody(Json.toJson(UserRequest(sessionId)))
       .execute[Option[User]]

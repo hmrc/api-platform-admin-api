@@ -29,8 +29,8 @@ import uk.gov.hmrc.apiplatformadminapi.models.{ApiResponse, ErrorResponse}
 import uk.gov.hmrc.apiplatformadminapi.services.ApisService
 
 @Singleton()
-class ApiDefinitionController @Inject() (apisService: ApisService, cc: ControllerComponents, auth: BackendAuthComponents)(implicit ec: ExecutionContext)
-    extends BackendController(cc) {
+class ApiDefinitionController @Inject() (apisService: ApisService, cc: ControllerComponents, auth: BackendAuthComponents)(using ec: ExecutionContext)
+    extends BackendController(cc) with JsonUtils {
   private lazy val notFound = NotFound(ErrorResponse("NOT_FOUND", "API could not be found").asJson)
 
   def fetch(serviceName: String, environment: Environment): Action[AnyContent] =

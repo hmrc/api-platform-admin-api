@@ -27,7 +27,7 @@ import uk.gov.hmrc.apiplatformadminapi.models.{UserRequest, *}
 import uk.gov.hmrc.apiplatformadminapi.services.UsersService
 
 @Singleton()
-class UsersController @Inject() (usersService: UsersService, cc: ControllerComponents, auth: BackendAuthComponents)(implicit ec: ExecutionContext)
+class UsersController @Inject() (usersService: UsersService, cc: ControllerComponents, auth: BackendAuthComponents)(using ec: ExecutionContext)
     extends BackendController(cc) with JsonUtils {
 
   def userQuery(): Action[AnyContent] =

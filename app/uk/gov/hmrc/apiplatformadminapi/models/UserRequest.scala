@@ -23,5 +23,5 @@ import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 case class UserRequest(sessionId: UserSessionId)
 
 object UserRequest {
-  implicit val format: Format[UserRequest] = Json.format[UserRequest]
+  given Format[UserRequest] = Json.format[UserRequest]
 }

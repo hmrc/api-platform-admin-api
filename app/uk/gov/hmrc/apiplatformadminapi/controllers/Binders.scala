@@ -19,7 +19,6 @@ package uk.gov.hmrc.apiplatformadminapi.controllers
 import play.api.Logger
 import play.api.mvc.QueryStringBindable
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.*
 
 object Binders {

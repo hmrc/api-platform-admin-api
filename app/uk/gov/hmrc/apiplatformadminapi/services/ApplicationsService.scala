@@ -27,11 +27,11 @@ import uk.gov.hmrc.apiplatformadminapi.connectors.ThirdPartyOrchestratorConnecto
 import uk.gov.hmrc.apiplatformadminapi.models.{Application, ApplicationWithUsers}
 
 @Singleton
-class ApplicationsService @Inject() (thirdPartyOrchestratorConnector: ThirdPartyOrchestratorConnector)(implicit val ec: ExecutionContext) {
+class ApplicationsService @Inject() (thirdPartyOrchestratorConnector: ThirdPartyOrchestratorConnector)(using ExecutionContext) {
 
   private val E = EitherTHelper.make[String]
 
-  def getApplicationWithUsers(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Either[String, ApplicationWithUsers]] = {
+  def getApplicationWithUsers(applicationId: ApplicationId)(using HeaderCarrier): Future[Either[String, ApplicationWithUsers]] = {
     (
       for {
         applicationResponse <- E.fromOptionF(thirdPartyOrchestratorConnector.getApplication(applicationId), "Application could not be found")
@@ -41,7 +41,7 @@ class ApplicationsService @Inject() (thirdPartyOrchestratorConnector: ThirdParty
       .value
   }
 
-  def getApplicationByClientId(clientId: ClientId)(implicit hc: HeaderCarrier): Future[Option[Application]] = {
+  def getApplicationByClientId(clientId: ClientId)(using HeaderCarrier): Future[Option[Application]] = {
     thirdPartyOrchestratorConnector.getApplicationByClientId(clientId).map(_.map(Application.from))
   }
 }

@@ -24,8 +24,9 @@ import play.api.mvc.{AnyContent, Request, Result, Results}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import uk.gov.hmrc.apiplatformadminapi.models.ErrorResponse
+import uk.gov.hmrc.apiplatformadminapi.utils.AsJson
 
-trait JsonUtils extends Results {
+trait JsonUtils extends Results with AsJson {
   self: BackendController =>
 
   def withJsonBodyFromAnyContent[T](f: T => Future[Result])(implicit request: Request[AnyContent], reads: Reads[T], d: DummyImplicit): Future[Result] = {

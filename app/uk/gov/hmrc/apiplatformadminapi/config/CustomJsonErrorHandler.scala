@@ -29,19 +29,20 @@ import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 
 import uk.gov.hmrc.apiplatformadminapi.models.ErrorResponse
+import uk.gov.hmrc.apiplatformadminapi.utils.AsJson
 
 class CustomJsonErrorHandler @Inject() (
     auditConnector: AuditConnector,
     httpAuditEvent: HttpAuditEvent,
     configuration: Configuration
-  )(implicit ec: ExecutionContext
-  ) extends JsonErrorHandler(auditConnector, httpAuditEvent, configuration) {
+  )(using ec: ExecutionContext
+  ) extends JsonErrorHandler(auditConnector, httpAuditEvent, configuration) with AsJson {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
     statusCode match {
       case BAD_REQUEST if !message.contains("Invalid Json") =>
         // Handle the failure of the Binders
-        implicit val headerCarrier: HeaderCarrier = hc(using request)
+        given HeaderCarrier = hc(using request)
         auditConnector.sendEvent(
           httpAuditEvent.dataEvent(
             eventType = "ServerValidationError",
