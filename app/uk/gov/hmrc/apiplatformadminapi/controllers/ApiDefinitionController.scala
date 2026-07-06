@@ -33,10 +33,10 @@ class ApiDefinitionController @Inject() (apisService: ApisService, cc: Controlle
     extends BackendController(cc) with JsonUtils {
   private lazy val notFound = NotFound(ErrorResponse("NOT_FOUND", "API could not be found").asJson)
 
-  def fetch(serviceName: String, environment: Environment): Action[AnyContent] =
+  def fetch(serviceName: ServiceName, environment: Environment): Action[AnyContent] =
     auth.authorizedAction(predicate = Predicate.Permission(Resource.from("api-platform-admin-api", "api-definitions/all"), IAAction("READ"))).async {
       implicit request: AuthenticatedRequest[AnyContent, Unit] =>
-        apisService.fetchApi(ServiceName(serviceName)) map {
+        apisService.fetchApi(serviceName) map {
           case Some(service) if environment == Environment.Sandbox    => service.sandbox.map(apiDef => Ok(ApiResponse.from(apiDef).asJson)).getOrElse(notFound)
           case Some(service) if environment == Environment.Production => service.production.map(apiDef => Ok(ApiResponse.from(apiDef).asJson)).getOrElse(notFound)
           case _                                                      => notFound

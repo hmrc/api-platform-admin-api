@@ -16,41 +16,49 @@
 
 package uk.gov.hmrc.apiplatformadminapi.models
 
+import java.util.UUID
 import scala.util.control.Exception.allCatch
 
 import play.api.Logger
 import play.api.mvc.PathBindable
 
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.ServiceName
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.ApplicationId
 
 object RouteModels {
-  type SimpleApplicationId = String
+  case class SimpleApplicationId(value: UUID) extends AnyVal
+  case class SimpleUserId(value: UUID)        extends AnyVal
+  type SimpleServiceName = String
 
   val logger = Logger("RoutesModels")
 
-  private def applicationIdFromString(text: String): Either[String, ApplicationId] = {
+  private def applicationIdFromString(text: String): Either[String, SimpleApplicationId] = {
     allCatch.opt(ApplicationId.unsafeApply(text))
       .toRight({
         logger.info("Cannot parse parameter %s as ApplicationId".format(text))
         "applicationId is not a UUID"
       })
+      .map(x => SimpleApplicationId(x.value))
   }
 
   implicit def applicationIdPathBindable(implicit textBinder: PathBindable[String]): PathBindable[SimpleApplicationId] =
     new PathBindable[SimpleApplicationId] {
 
       override def bind(key: String, value: String): Either[String, SimpleApplicationId] = {
-        textBinder.bind(key, value).flatMap(applicationIdFromString).map(_.toString())
+        textBinder.bind(key, value).flatMap(applicationIdFromString)
       }
 
-      override def unbind(key: String, applicationId: SimpleApplicationId): String = {
-        textBinder.unbind(key, applicationId.toString)
+      override def unbind(key: String, id: SimpleApplicationId): String = {
+        textBinder.unbind(key, id.toString)
       }
     }
 
   object Conversions {
 
     given Conversion[SimpleApplicationId, ApplicationId] with
-      def apply(x: SimpleApplicationId): ApplicationId = ApplicationId.unsafeApply(x)
+      def apply(x: SimpleApplicationId): ApplicationId = ApplicationId(x.value)
+
+    given Conversion[SimpleServiceName, ServiceName] with
+      def apply(x: SimpleServiceName): ServiceName = ServiceName(x)
   }
 }
