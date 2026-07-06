@@ -30,10 +30,12 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     routesImport ++= Seq(
       "java.util.UUID",
-      "uk.gov.hmrc.apiplatformadminapi.controllers._",
-      "uk.gov.hmrc.apiplatformadminapi.controllers.Binders._",
-      "uk.gov.hmrc.apiplatform.modules.common.domain.models._",
-      "uk.gov.hmrc.apiplatform.modules.apis.domain.models._"
+      "uk.gov.hmrc.apiplatformadminapi.controllers.*",
+      "uk.gov.hmrc.apiplatformadminapi.controllers.Binders.*",
+      "uk.gov.hmrc.apiplatform.modules.common.domain.models.*",
+      "uk.gov.hmrc.apiplatform.modules.apis.domain.models.*",
+      "uk.gov.hmrc.apiplatformadminapi.models.RouteModels.*",
+      "uk.gov.hmrc.apiplatformadminapi.models.RouteModels.Conversions.given"
     )
   )
 

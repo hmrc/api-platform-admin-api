@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apiplatformadminapi.controllers
 
-import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,10 +31,10 @@ import uk.gov.hmrc.apiplatformadminapi.services.ApplicationsService
 class ApplicationsController @Inject() (applicationsService: ApplicationsService, cc: ControllerComponents, auth: BackendAuthComponents)(using ec: ExecutionContext)
     extends BackendController(cc) with JsonUtils {
 
-  def getApplication(applicationId: UUID): Action[AnyContent] =
+  def getApplication(applicationId: ApplicationId): Action[AnyContent] =
     auth.authorizedAction(predicate = Predicate.Permission(Resource.from("api-platform-admin-api", "applications/all"), IAAction("READ"))).async {
       implicit request: AuthenticatedRequest[AnyContent, Unit] =>
-        applicationsService.getApplicationWithUsers(ApplicationId(applicationId)).map {
+        applicationsService.getApplicationWithUsers(applicationId).map {
           case Right(applicationWithUsers) => Ok(applicationWithUsers.asJson)
           case Left(message)               => NotFound(ErrorResponse("NOT_FOUND", message).asJson)
         } recover recovery

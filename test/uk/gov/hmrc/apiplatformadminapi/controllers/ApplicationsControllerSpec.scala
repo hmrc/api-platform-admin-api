@@ -55,7 +55,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.returns(applicationWithUsers)
 
-      val result = underTest.getApplication(applicationId.value)(fakeRequest)
+      val result = underTest.getApplication(applicationId)(fakeRequest)
 
       status(result) shouldBe Status.OK
       contentAsJson(result).as[ApplicationWithUsers] shouldBe applicationWithUsers
@@ -66,7 +66,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.returnsNotFound()
 
-      val result = underTest.getApplication(applicationId.value)(fakeRequest)
+      val result = underTest.getApplication(applicationId)(fakeRequest)
 
       status(result) shouldBe Status.NOT_FOUND
       contentAsJson(result) shouldBe ErrorResponse("NOT_FOUND", "Application could not be found").asJson
@@ -77,7 +77,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       GetApplicationWithUsers.fails()
 
-      val result = underTest.getApplication(applicationId.value)(fakeRequest)
+      val result = underTest.getApplication(applicationId)(fakeRequest)
 
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       contentAsJson(result) shouldBe ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred: bang").asJson
@@ -88,7 +88,7 @@ class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
 
       intercept[UpstreamErrorResponse] {
-        await(underTest.getApplication(applicationId.value)(fakeRequest))
+        await(underTest.getApplication(applicationId)(fakeRequest))
       }
       GetApplicationWithUsers.verifyNeverCalledWith(applicationId)
     }
