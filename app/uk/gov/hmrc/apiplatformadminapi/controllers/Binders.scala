@@ -16,37 +16,14 @@
 
 package uk.gov.hmrc.apiplatformadminapi.controllers
 
-import java.util.UUID
-import scala.util.control.Exception.allCatch
-
 import play.api.Logger
-import play.api.mvc.{PathBindable, QueryStringBindable}
+import play.api.mvc.QueryStringBindable
 
 import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.*
 
 object Binders {
   val logger = Logger("binders")
-
-  private def applicationIdFromString(text: String): Either[String, ApplicationId] = {
-    allCatch.opt(ApplicationId(UUID.fromString(text)))
-      .toRight({
-        logger.info("Cannot parse parameter %s as ApplicationId".format(text))
-        "applicationId is not a UUID"
-      })
-  }
-
-  implicit def serviceNameQueryBinder(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[ServiceName] = new QueryStringBindable[ServiceName] {
-
-    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, ServiceName]] = {
-      textBinder.bind(key, params).map {
-        case Right(name) => Right(ServiceName(name))
-        case _           => Left("Not a valid serviceName")
-      }
-    }
-
-    override def unbind(key: String, serviceName: ServiceName): String = serviceName
-  }
 
   implicit def environmentQueryBinder(implicit textBinder: QueryStringBindable[String]): QueryStringBindable[Environment] = new QueryStringBindable[Environment] {
 
@@ -63,18 +40,4 @@ object Binders {
       env.toString.toLowerCase
     }
   }
-
-  implicit def applicationIdPathBindable(implicit textBinder: PathBindable[String]): PathBindable[ApplicationId] =
-    new PathBindable[ApplicationId] {
-
-      override def bind(key: String, value: String): Either[String, ApplicationId] = {
-        textBinder.bind(key, value).flatMap(applicationIdFromString)
-      }
-      // $COVERAGE-OFF$
-
-      override def unbind(key: String, applicationId: ApplicationId): String = {
-        textBinder.unbind(key, applicationId.toString)
-      }
-      // $COVERAGE-ON$
-    }
 }

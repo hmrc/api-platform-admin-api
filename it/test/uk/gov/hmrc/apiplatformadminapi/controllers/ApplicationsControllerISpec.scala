@@ -55,7 +55,7 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
       GetApplication.stubWithApplicationId(applicationId)
       GetApplicationDevelopers.stubWithApplicationId(applicationId)
 
-      val fakeRequest = FakeRequest("GET", s"/applications/${applicationId.value}").withHeaders("Authorization" -> token)
+      val fakeRequest = FakeRequest("GET", s"/applications/$applicationId").withHeaders("Authorization" -> token)
 
       val result = route(app, fakeRequest).get
 
@@ -68,7 +68,7 @@ class ApplicationsControllerISpec extends AsyncHmrcSpec with WireMockSupport wit
       val result = route(app, FakeRequest("GET", "/applications/not-a-uuid")).get
 
       status(result) mustBe BAD_REQUEST
-      contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "applicationId is not a UUID").asJson
+      contentAsJson(result) mustBe ErrorResponse("BAD_REQUEST", "Cannot parse parameter applicationId as UUID: Invalid UUID string: not-a-uuid").asJson
     }
   }
 
