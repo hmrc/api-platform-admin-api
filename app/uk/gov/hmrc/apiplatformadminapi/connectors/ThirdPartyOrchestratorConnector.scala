@@ -20,35 +20,35 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.ApplicationWithCollaborators
-import uk.gov.hmrc.apiplatform.modules.applications.query.domain.models.ParamNames
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, ClientId}
 import uk.gov.hmrc.apiplatform.modules.tpd.core.domain.models.User
 import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
 import uk.gov.hmrc.apiplatformadminapi.models.UserRequest
 
 @Singleton
-class ThirdPartyOrchestratorConnector @Inject() (http: HttpClientV2, config: ThirdPartyOrchestratorConnector.Config)(implicit ec: ExecutionContext) {
+class ThirdPartyOrchestratorConnector @Inject() (http: HttpClientV2, config: ThirdPartyOrchestratorConnector.Config)(using ExecutionContext) {
 
-  def getApplication(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
-    http.get(url"${config.serviceBaseUrl}/query?${ParamNames.ApplicationId}=$applicationId")
+  def getApplication(applicationId: ApplicationId)(using HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
+    http.get(url"${config.serviceBaseUrl}/query?applicationId=$applicationId")
       .execute[Option[ApplicationWithCollaborators]]
   }
 
-  def getApplicationByClientId(clientId: ClientId)(implicit hc: HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
-    http.get(url"${config.serviceBaseUrl}/query?${ParamNames.ClientId}=$clientId")
+  def getApplicationByClientId(clientId: ClientId)(using HeaderCarrier): Future[Option[ApplicationWithCollaborators]] = {
+    http.get(url"${config.serviceBaseUrl}/query?clientId=$clientId")
       .execute[Option[ApplicationWithCollaborators]]
   }
 
-  def getApplicationDevelopers(applicationId: ApplicationId)(implicit hc: HeaderCarrier): Future[Set[User]] = {
+  def getApplicationDevelopers(applicationId: ApplicationId)(using HeaderCarrier): Future[Set[User]] = {
     http.get(url"${config.serviceBaseUrl}/applications/$applicationId/developers").execute[Set[User]]
   }
 
-  def getBySessionId(sessionId: UserSessionId)(implicit hc: HeaderCarrier): Future[Option[User]] = {
+  def getBySessionId(sessionId: UserSessionId)(using HeaderCarrier): Future[Option[User]] = {
     http.post(url"${config.serviceBaseUrl}/session/validate")
       .withBody(Json.toJson(UserRequest(sessionId)))
       .execute[Option[User]]

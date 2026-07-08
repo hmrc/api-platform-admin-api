@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apiplatformadminapi.services
+package uk.gov.hmrc.apiplatformadminapi.utils
 
-import javax.inject.Inject
-import scala.concurrent.Future
+import play.api.libs.json.*
 
-import uk.gov.hmrc.http.HeaderCarrier
+trait AsJson {
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
-import uk.gov.hmrc.apiplatformadminapi.connectors.ApmConnector
+  extension [T](t: T)(using Writes[T]) {
 
-class ApisService @Inject() (apmConnector: ApmConnector) {
-
-  def fetchApi(serviceName: ServiceName)(using HeaderCarrier): Future[Option[Locator[ApiDefinition]]] = {
-    apmConnector.fetchApi(serviceName)
+    def asJson: JsValue = {
+      Json.toJson(t)
+    }
   }
 }

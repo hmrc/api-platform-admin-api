@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.apiplatformadminapi.services
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId
@@ -29,7 +27,7 @@ import uk.gov.hmrc.apiplatformadminapi.utils.AsyncHmrcSpec
 class UsersServiceSpec extends AsyncHmrcSpec with ThirdPartyOrchestratorConnectorMockModule with UserTestData with LocalUserIdTracker {
 
   trait Setup {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    given HeaderCarrier = HeaderCarrier()
 
     val underTest = new UsersService(mockThirdPartyOrchestratorConnector)
 

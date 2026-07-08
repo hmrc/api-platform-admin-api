@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.apiplatformadminapi.controllers
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import play.api.Configuration
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import uk.gov.hmrc.apiplatform.modules.tpd.session.domain.models.UserSessionId

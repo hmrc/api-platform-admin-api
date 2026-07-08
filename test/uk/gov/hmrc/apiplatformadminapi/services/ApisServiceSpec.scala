@@ -19,12 +19,12 @@ package uk.gov.hmrc.apiplatformadminapi.services
 import uk.gov.hmrc.http.HeaderCarrier
 
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApmConnectorMockModule
-import uk.gov.hmrc.apiplatformadminapi.utils.{AsyncHmrcSpec, _}
+import uk.gov.hmrc.apiplatformadminapi.utils.{AsyncHmrcSpec, *}
 
 class ApisServiceSpec extends AsyncHmrcSpec with ApiTestData {
 
   trait Setup extends ApmConnectorMockModule {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    given HeaderCarrier = HeaderCarrier()
 
     val underTest = new ApisService(mockApmConnector)
   }

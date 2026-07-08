@@ -33,51 +33,51 @@ trait ThirdPartyOrchestratorConnectorMockModule extends MockitoSugar with Argume
   object GetApplication {
 
     def returns(application: ApplicationWithCollaborators) =
-      when(mockThirdPartyOrchestratorConnector.getApplication(*[ApplicationId])(*)).thenReturn(Future.successful(Some(application)))
+      when(mockThirdPartyOrchestratorConnector.getApplication(*[ApplicationId])(using *)).thenReturn(Future.successful(Some(application)))
 
     def returnsNone() =
-      when(mockThirdPartyOrchestratorConnector.getApplication(*[ApplicationId])(*)).thenReturn(Future.successful(None))
+      when(mockThirdPartyOrchestratorConnector.getApplication(*[ApplicationId])(using *)).thenReturn(Future.successful(None))
 
     def verifyCalledWith(applicationId: ApplicationId) =
-      verify(mockThirdPartyOrchestratorConnector).getApplication(eqTo(applicationId))(*)
+      verify(mockThirdPartyOrchestratorConnector).getApplication(eqTo(applicationId))(using *)
   }
 
   object GetApplicationByClientId {
 
     def returns(application: ApplicationWithCollaborators) =
-      when(mockThirdPartyOrchestratorConnector.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(Some(application)))
+      when(mockThirdPartyOrchestratorConnector.getApplicationByClientId(*[ClientId])(using *)).thenReturn(Future.successful(Some(application)))
 
     def returnsNone() =
-      when(mockThirdPartyOrchestratorConnector.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(None))
+      when(mockThirdPartyOrchestratorConnector.getApplicationByClientId(*[ClientId])(using *)).thenReturn(Future.successful(None))
 
     def verifyCalledWith(clientId: ClientId) =
-      verify(mockThirdPartyOrchestratorConnector).getApplicationByClientId(eqTo(clientId))(*)
+      verify(mockThirdPartyOrchestratorConnector).getApplicationByClientId(eqTo(clientId))(using *)
   }
 
   object GetApplicationDevelopers {
 
     def returns(users: Set[User]) =
-      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(*)).thenReturn(Future.successful(users))
+      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(using *)).thenReturn(Future.successful(users))
 
     def returnsNoDevelopers() =
-      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(*)).thenReturn(Future.successful(Set.empty))
+      when(mockThirdPartyOrchestratorConnector.getApplicationDevelopers(*[ApplicationId])(using *)).thenReturn(Future.successful(Set.empty))
 
     def verifyCalledWith(applicationId: ApplicationId) =
-      verify(mockThirdPartyOrchestratorConnector).getApplicationDevelopers(eqTo(applicationId))(*)
+      verify(mockThirdPartyOrchestratorConnector).getApplicationDevelopers(eqTo(applicationId))(using *)
 
     def verifyNotCalled() =
-      verify(mockThirdPartyOrchestratorConnector, never).getApplicationDevelopers(*[ApplicationId])(*)
+      verify(mockThirdPartyOrchestratorConnector, never).getApplicationDevelopers(*[ApplicationId])(using *)
   }
 
   object GetBySessionId {
 
     def returns(developer: User) =
-      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(Some(developer)))
+      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[UserSessionId])(using *)).thenReturn(Future.successful(Some(developer)))
 
     def returnsNone() =
-      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[UserSessionId])(*)).thenReturn(Future.successful(None))
+      when(mockThirdPartyOrchestratorConnector.getBySessionId(*[UserSessionId])(using *)).thenReturn(Future.successful(None))
 
     def verifyCalledWith(sessionId: UserSessionId) =
-      verify(mockThirdPartyOrchestratorConnector).getBySessionId(eqTo(sessionId))(*)
+      verify(mockThirdPartyOrchestratorConnector).getBySessionId(eqTo(sessionId))(using *)
   }
 }

@@ -20,7 +20,7 @@ import scala.concurrent.Future
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 import uk.gov.hmrc.apiplatformadminapi.connectors.ApmConnector
 
 trait ApmConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar {
@@ -30,15 +30,15 @@ trait ApmConnectorMockModule extends MockitoSugar with ArgumentMatchersSugar {
   object FetchApi {
 
     def returns(api: Locator[ApiDefinition]) =
-      when(mockApmConnector.fetchApi(*[ServiceName])(*)).thenReturn(Future.successful(Some(api)))
+      when(mockApmConnector.fetchApi(*[ServiceName])(using *)).thenReturn(Future.successful(Some(api)))
 
     def returnsNone() =
-      when(mockApmConnector.fetchApi(*[ServiceName])(*)).thenReturn(Future.successful(None))
+      when(mockApmConnector.fetchApi(*[ServiceName])(using *)).thenReturn(Future.successful(None))
 
     def fails() =
-      when(mockApmConnector.fetchApi(*[ServiceName])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockApmConnector.fetchApi(*[ServiceName])(using *)).thenReturn(Future.failed(new Exception("bang")))
 
     def verifyCalledWith(serviceName: ServiceName) =
-      verify(mockApmConnector).fetchApi(eqTo(serviceName))(*)
+      verify(mockApmConnector).fetchApi(eqTo(serviceName))(using *)
   }
 }

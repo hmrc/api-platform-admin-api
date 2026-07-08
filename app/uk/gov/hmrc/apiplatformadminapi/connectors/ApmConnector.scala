@@ -20,17 +20,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 import play.api.libs.json.OFormat
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
-import uk.gov.hmrc.apiplatform.modules.apis.domain.models._
+import uk.gov.hmrc.apiplatform.modules.apis.domain.models.*
 
 @Singleton
-class ApmConnector @Inject() (http: HttpClientV2, config: ApmConnector.Config)(implicit ec: ExecutionContext) {
+class ApmConnector @Inject() (http: HttpClientV2, config: ApmConnector.Config)(using ec: ExecutionContext) {
 
-  def fetchApi(serviceName: ServiceName)(implicit hc: HeaderCarrier): Future[Option[Locator[ApiDefinition]]] = {
-    implicit val formatter: OFormat[Locator[ApiDefinition]] = Locator.buildLocatorFormatter[ApiDefinition]
+  def fetchApi(serviceName: ServiceName)(using HeaderCarrier): Future[Option[Locator[ApiDefinition]]] = {
+    given OFormat[Locator[ApiDefinition]] = Locator.buildLocatorFormatter[ApiDefinition]
 
     http.get(url"${config.serviceBaseUrl}/api-definitions/service-name/$serviceName")
       .execute[Option[Locator[ApiDefinition]]]

@@ -21,24 +21,24 @@ import scala.concurrent.Future
 
 import play.api.http.Status
 import play.api.mvc.ControllerComponents
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.internalauth.client.Predicate.Permission
 import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
-import uk.gov.hmrc.internalauth.client.{Retrieval, _}
+import uk.gov.hmrc.internalauth.client.{Retrieval, *}
 
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.Environment
 import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
-import uk.gov.hmrc.apiplatformadminapi.mocks._
-import uk.gov.hmrc.apiplatformadminapi.models._
+import uk.gov.hmrc.apiplatformadminapi.mocks.*
+import uk.gov.hmrc.apiplatformadminapi.models.*
 import uk.gov.hmrc.apiplatformadminapi.utils.ApiTestData
 
 class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule with ApiTestData {
 
   trait Setup {
-    implicit val hc: HeaderCarrier        = HeaderCarrier()
-    implicit val cc: ControllerComponents = Helpers.stubControllerComponents()
+    given HeaderCarrier            = HeaderCarrier()
+    given cc: ControllerComponents = Helpers.stubControllerComponents()
 
     val fakeRequest = FakeRequest().withHeaders("Authorization" -> "123456")
 
@@ -53,7 +53,7 @@ class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule wi
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returns(anApiInBoth)
 
-      val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)
+      val result = underTest.fetch(aServiceName, Environment.Production)(fakeRequest)
 
       status(result) shouldBe Status.OK
       contentAsJson(result).as[ApiResponse] shouldBe apiResponse
@@ -64,7 +64,7 @@ class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule wi
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returns(anApiInProduction)
 
-      val result = underTest.fetch(aServiceName, Environment.SANDBOX)(fakeRequest)
+      val result = underTest.fetch(aServiceName, Environment.Sandbox)(fakeRequest)
 
       status(result) shouldBe Status.NOT_FOUND
       contentAsJson(result) shouldBe ErrorResponse("NOT_FOUND", "API could not be found").asJson
@@ -74,7 +74,7 @@ class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule wi
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returns(anApiInSandbox)
 
-      val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)
+      val result = underTest.fetch(aServiceName, Environment.Production)(fakeRequest)
 
       status(result) shouldBe Status.NOT_FOUND
       contentAsJson(result) shouldBe ErrorResponse("NOT_FOUND", "API could not be found").asJson
@@ -84,7 +84,7 @@ class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule wi
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.returnsNone()
 
-      val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)
+      val result = underTest.fetch(aServiceName, Environment.Sandbox)(fakeRequest)
 
       status(result) shouldBe Status.NOT_FOUND
       contentAsJson(result) shouldBe ErrorResponse("NOT_FOUND", "API could not be found").asJson
@@ -94,7 +94,7 @@ class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule wi
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.successful(Retrieval.Username("Bob")))
       FetchApi.fails()
 
-      val result = underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest)
+      val result = underTest.fetch(aServiceName, Environment.Production)(fakeRequest)
 
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       contentAsJson(result) shouldBe ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred: bang").asJson
@@ -104,7 +104,7 @@ class ApiDefinitionControllerSpec extends HmrcSpec with ApisServiceMockModule wi
       when(mockStubBehaviour.stubAuth(Some(expectedPredicate), Retrieval.EmptyRetrieval)).thenReturn(Future.failed(UpstreamErrorResponse("Unauthorized", Status.UNAUTHORIZED)))
 
       intercept[UpstreamErrorResponse] {
-        await(underTest.fetch(aServiceName, Environment.PRODUCTION)(fakeRequest))
+        await(underTest.fetch(aServiceName, Environment.Production)(fakeRequest))
       }
     }
   }

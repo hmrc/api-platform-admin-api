@@ -31,33 +31,33 @@ trait ApplicationsServiceMockModule extends MockitoSugar with ArgumentMatchersSu
   object GetApplicationWithUsers {
 
     def returns(application: ApplicationWithUsers) =
-      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(*)).thenReturn(Future.successful(Right(application)))
+      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(using *)).thenReturn(Future.successful(Right(application)))
 
     def returnsNotFound() =
-      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(*)).thenReturn(Future.successful(Left("Application could not be found")))
+      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(using *)).thenReturn(Future.successful(Left("Application could not be found")))
 
     def fails() =
-      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockApplicationsService.getApplicationWithUsers(*[ApplicationId])(using *)).thenReturn(Future.failed(new Exception("bang")))
 
     def verifyCalledWith(applicationId: ApplicationId) =
-      verify(mockApplicationsService).getApplicationWithUsers(eqTo(applicationId))(*)
+      verify(mockApplicationsService).getApplicationWithUsers(eqTo(applicationId))(using *)
 
     def verifyNeverCalledWith(applicationId: ApplicationId) =
-      verify(mockApplicationsService, never).getApplicationWithUsers(eqTo(applicationId))(*)
+      verify(mockApplicationsService, never).getApplicationWithUsers(eqTo(applicationId))(using *)
   }
 
   object GetApplicationByClientId {
 
     def returns(application: Application) =
-      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(Some(application)))
+      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(using *)).thenReturn(Future.successful(Some(application)))
 
     def returnsNotFound() =
-      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.successful(None))
+      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(using *)).thenReturn(Future.successful(None))
 
     def fails() =
-      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(*)).thenReturn(Future.failed(new Exception("bang")))
+      when(mockApplicationsService.getApplicationByClientId(*[ClientId])(using *)).thenReturn(Future.failed(new Exception("bang")))
 
     def verifyCalledWith(clientId: ClientId) =
-      verify(mockApplicationsService).getApplicationByClientId(eqTo(clientId))(*)
+      verify(mockApplicationsService).getApplicationByClientId(eqTo(clientId))(using *)
   }
 }

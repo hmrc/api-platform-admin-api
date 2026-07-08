@@ -22,12 +22,12 @@ import scala.concurrent.Future
 import play.api.http.Status
 import play.api.mvc.ControllerComponents
 import play.api.mvc.request.RequestTarget
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.internalauth.client.Predicate.Permission
 import uk.gov.hmrc.internalauth.client.test.{BackendAuthComponentsStub, StubBehaviour}
-import uk.gov.hmrc.internalauth.client.{Retrieval, _}
+import uk.gov.hmrc.internalauth.client.{Retrieval, *}
 
 import uk.gov.hmrc.apiplatform.modules.common.utils.HmrcSpec
 import uk.gov.hmrc.apiplatformadminapi.mocks.ApplicationsServiceMockModule
@@ -37,8 +37,8 @@ import uk.gov.hmrc.apiplatformadminapi.utils.ApplicationTestData
 class ApplicationsControllerSpec extends HmrcSpec with ApplicationTestData {
 
   trait Setup extends ApplicationsServiceMockModule {
-    implicit val hc: HeaderCarrier        = HeaderCarrier()
-    implicit val cc: ControllerComponents = Helpers.stubControllerComponents()
+    given HeaderCarrier            = HeaderCarrier()
+    given cc: ControllerComponents = Helpers.stubControllerComponents()
 
     val fakeRequest = FakeRequest().withHeaders("Authorization" -> "123456")
 

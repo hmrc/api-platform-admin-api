@@ -20,14 +20,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.internalauth.client._
+import uk.gov.hmrc.internalauth.client.*
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import uk.gov.hmrc.apiplatformadminapi.models.{UserRequest, _}
+import uk.gov.hmrc.apiplatformadminapi.models.{UserRequest, *}
 import uk.gov.hmrc.apiplatformadminapi.services.UsersService
 
 @Singleton()
-class UsersController @Inject() (usersService: UsersService, cc: ControllerComponents, auth: BackendAuthComponents)(implicit ec: ExecutionContext)
+class UsersController @Inject() (usersService: UsersService, cc: ControllerComponents, auth: BackendAuthComponents)(using ec: ExecutionContext)
     extends BackendController(cc) with JsonUtils {
 
   def userQuery(): Action[AnyContent] =

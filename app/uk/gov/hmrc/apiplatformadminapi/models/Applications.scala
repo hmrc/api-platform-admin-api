@@ -21,17 +21,13 @@ import play.api.libs.json.{Format, JsValue, Json, OFormat}
 import uk.gov.hmrc.apiplatform.modules.applications.core.domain.models.{ApplicationName, ApplicationWithCollaborators}
 import uk.gov.hmrc.apiplatform.modules.common.domain.models.{ApplicationId, Environment}
 
-case class Applications(value: List[Application]) extends AnyVal {
-  def asJson: JsValue = Applications.format.writes(this)
-}
+case class Applications(value: List[Application]) extends AnyVal
 
 object Applications {
-  implicit val format: Format[Applications] = Json.valueFormat[Applications]
+  given Format[Applications] = Json.valueFormat[Applications]
 }
 
-case class Application(applicationId: ApplicationId, name: ApplicationName, environment: Environment) {
-  def asJson: JsValue = Application.format.writes(this)
-}
+case class Application(applicationId: ApplicationId, name: ApplicationName, environment: Environment)
 
 object Application {
 
@@ -41,5 +37,5 @@ object Application {
     environment = app.deployedTo
   )
 
-  implicit val format: OFormat[Application] = Json.format[Application]
+  given OFormat[Application] = Json.format[Application]
 }
